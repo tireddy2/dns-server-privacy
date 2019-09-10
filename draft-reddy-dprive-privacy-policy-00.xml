@@ -70,54 +70,59 @@
     <workgroup>DPRIVE WG</workgroup>
 
     <abstract>
-      <t>This document defines a method for creating and validating a token
-      that cryptographically verifies the privacy policy information of the
-      DNS-over-(D)TLS and DNS-over-HTTPS servers. The privacy assertion token
-      (PAT) is cryptographically signed to protect the integrity of the
-      privacy policy information of the DNS server and to verify the assertion
-      of the privacy policy information at the DNS client. The cryptographic
-      signature is defined with the intention that DNS client can confidently
-      verify the privacy policy information of the DNS server. The privacy
-      assertion token is particularly useful for DNS-over-(D)TLS and
-      DNS-over-HTTPS servers discovered in the local network.</t>
+      <t>Users want to control how their DNS queries are handled by
+      DNS servers so they can configure their system to use DNS servers
+      that comply with their privacy expectations.</t>
+     <t>This document defines a mechanism for a DNS server to
+      communicate its privacy policy to a DNS client.  This
+      communication is cryptographically signed by multiple parties to
+      attest to its authenticity.  By evaluating the DNS privacy
+      policy and the signatories, the DNS client can choose a DNS
+      server that best supports its desired privacy policies.  The
+      privacy assertion token is particularly useful for
+      DNS-over-(D)TLS and DNS-over-HTTPS servers, both in the cloud
+      and those discovered on the local network.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="intro" title="Introduction">
-      <t><xref target="RFC7626"></xref> discusses DNS privacy considerations
-      in both "on the wire" (Section 2.4 of <xref target="RFC7626"></xref>)
-      and "in the server" (Section 2.5 of <xref target="RFC7626"></xref>
-      contexts. In recent years there has also been an increase in the
-      availability of "public resolvers" <xref
-      target="I-D.ietf-dnsop-terminology-bis"></xref> which DNS clients may be
-      pre-configured to use instead of the default network resolver because
-      they offer a specific feature (e.g., good reachability, encrypted
-      transport, strong privacy policy, filtering (or lack of), etc.). The DNS
-      client may know the privacy preserving data policy of pre-configured
-      public DNS-over-(D)TLS <xref target="RFC7858"></xref><xref
-      target="RFC8094"></xref> and DNS-over-HTTPS <xref
-      target="RFC8484"></xref> servers but does not know the privacy policy of
-      DNS-over-(D)TLS and DNS-over-HTTPS servers discovered in the local
-      network. The DNS client can be securely bootstrapped to discover and
-      authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers provided by a
-      local network using the technique proposed in <xref
-      target="I-D.reddy-dprive-bootstrap-dns-server"></xref>. However, the DNS
-      client does not know the privacy policy information of network provided
-      DNS-over-(D)TLS and DNS-over-HTTPS servers.</t>
+      <t><xref target="RFC7626"></xref> discusses DNS privacy
+      considerations in both "on the wire" (Section 2.4
+      of <xref target="RFC7626"></xref>) and "in the server" (Section
+      2.5 of <xref target="RFC7626"></xref> contexts. In recent years
+      there has also been an increase in the availability of "public
+      resolvers" <xref target="I-D.ietf-dnsop-terminology-bis"></xref>
+      which DNS clients may be pre-configured to use instead of the
+      default network resolver because they offer a specific feature
+      (e.g., good reachability, encrypted transport, strong privacy
+      policy, filtering (or lack of), etc.). While a human can read
+      the privacy policy of a DNS sever operator, this information is
+      not computer-parsable to allow automatic DNS server selection by
+      the DNS client software.  For DNS servers operated on the local
+      network, the DNS client can be securely bootstrapped to discover
+      and authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers
+      provided by a local network using the technique proposed
+      in <xref target="I-D.reddy-dprive-bootstrap-dns-server"></xref>.
+      By creating a computer-parsable DNS server privacy policy, the
+      DNS client can automatically allow using a DNS server on the
+      local network that complies with the DNS client's privacy
+      policy.</t>
 
-      <t>This document defines a method for creating and validating a token
-      that cryptographically verifies the privacy policy information of the
-      DNS-over-(D)TLS or DNS-over-HTTPS server. The privacy assertion token is
-      cryptographically signed either by the domain hosting the DNS server or
-      by a third party who performed privacy and security audit of the DNS
+      <t>This document defines a method to convey the that
+      cryptographically verifies the privacy policy information of a
+      DNS server, such as a DNS-over-(D)TLS or DNS-over-HTTPS
+      server. The privacy assertion token is cryptographically signed
+      either by (a) the domain hosting the DNS server or (b) by a
+      third party who performed privacy and security audit of the DNS
       server. The privacy policy information will be attested using
       "Organization Validation" (OV) or "Extended Validation" (EV)
-      certificates to avoid bad actors taking advantage of this mechanism to
-      advertize DNS-over-(D)TLS and DNS-over-HTTPS servers for illegitimate
-      and fraudulent purposes meant to trick DNS clients into believing that
-      they are using a legitimate DNS-over-(D)TLS or DNS-over-HTTPS server
-      hosted to provide privacy for DNS transactions.</t>
+      certificates to avoid bad actors taking advantage of this
+      mechanism to advertize DNS-over-(D)TLS and DNS-over-HTTPS
+      servers for illegitimate and fraudulent purposes meant to trick
+      DNS clients into believing that they are using a legitimate
+      DNS-over-(D)TLS or DNS-over-HTTPS server hosted to provide
+      privacy for DNS transactions.</t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -322,8 +327,8 @@
                 address is PII. This is a mandatory attribute.</t>
 
                 <t hangText="logging:">If the transaction data (e.g., DNS
-                messages) is logged or not, and if transaction data is logged,
-                the period for which the transaction data is stored. This
+                messages) is logged and the duration that data is stored.
+                This
                 mandatory attribute has the following structure: <list
                     style="hanging">
                     <t hangText="log:">If the parameter value is set to
@@ -335,10 +340,17 @@
                   </list></t>
 
                 <t hangText="useridentity:">If the user identity that sent the
-                DNS query is logged or not, and if user identity address is
-                indeed logged, the period for which the user identity is
-                logged. User identity such as username, IP address, MAC
-                address or personally identifiable data. This mandatory
+                DNS query is logged and the duration that data is retained.
+                User identity such as username, IP address, MAC
+                address or personally identifiable data 
+
+[[dwing: My system
+queries dyn.danwing.org when it starts, which is pretty darn personally-
+identifying.  The 'personally identifiable data' is //very// slippery.  How
+should this be set??]]. 
+
+
+This mandatory
                 attribute has the following structure: <list style="hanging">
                     <t hangText="log:">If the parameter value is set to
                     'true', user identity is logged.</t>
@@ -349,8 +361,7 @@
                   </list></t>
 
                 <t hangText="notifyuser:">If the transaction data is logged to
-                notify the user access to certain domains (e.g., malicious
-                domains) is blocked, the period for which the transaction data
+                notify the user access to certain domains is blocked, the period for which the transaction data
                 is stored. This optional attribute has the following
                 structure: <list style="hanging">
                     <t hangText="log:">If the parameter value is set to
@@ -361,7 +372,13 @@
                     indefinite duration.</t>
                   </list></t>
 
-                <t hangText="knownmalware:">If access to malicious domains is
+                <t hangText="knownmalware:">If access to malicious domains
+
+[[dwing: why is attributed called 'malware', but text says 'malicious
+domains'?  Confusing.  What are we trying to capture/describe here,
+really?]]
+
+ is
                 logged, the period for which access to malicious domains is
                 stored. This optional attribute has the following structure:
                 <list style="hanging">
@@ -545,25 +562,9 @@
 ]]></artwork>
         </figure>
 
-        <t>The parent members of the JSON object are as follows:</t>
+        <t>The parent members of the JSON object are as follows, in
+        lexicographic order: "iat", "privinfo", "server".</t>
 
-        <t><list style="symbols">
-            <t>&ldquo;server&rdquo;</t>
-
-            <t>&ldquo;iat&rdquo;</t>
-
-            <t>&ldquo;privinfo&rdquo;</t>
-          </list></t>
-
-        <t>Their lexicographic order is:</t>
-
-        <t><list style="symbols">
-            <t>&ldquo;iat&rdquo;</t>
-
-            <t>"privinfo"</t>
-
-            <t>&ldquo;server&rdquo;</t>
-          </list></t>
 
         <t>The final constructed deterministic JSON serialization
         representation, with whitespace and line breaks removed, (with line
@@ -588,11 +589,30 @@
       servers offer privacy but exactly do the opposite to invade the privacy
       of the user. Bad actor can get a domain name, host DNS-over-(D)TLS and
       DNS-over-HTTPS servers, and get the DNS server certificate signed by a
-      CA. The privacy policy information will have to be attested using OV or
-      EV certificates to prevent the attack. If the PAT object is asserted by
+      CA.  The privacy policy information will have to be attested using OV or
+      EV certificates to prevent the attack.  If the PAT object is asserted by
       a third party, it can do a "time of check" but the DNS server is
       susceptible of "time of use" attack, hence the PAT object needs to be
       also asserted by the domain hosting the DNS server.</t>
+
+<t>[[dwing new text to replace all of above paragraph: The DNS client
+MUST be configured to trust the leaf of the signer of the PAT object.
+That is, trust of the signer MUST NOT be determined by validating
+the signer via the OS or browser trust chain because that would allow
+any arbitrary entity to operate a DNS server and assert any sort of
+privacy policy.]]</t>
+
+<t>[[dwing: what is the 'time of check' mentioned?  Text does not
+explain that attack.  Is it trying to say that a DNS server might have
+complied with the privacy policy when it was audited (by the 3rd party)
+but could now be in non-compliance with its privacy policy?  If so, let's
+discuss that more carefully [separate paragraph, at least!] but also
+explain how old the domain's re-assertion of compliance is allowed to
+be.  Perhaps every 7 days is reasonable for the local domain's 
+re-assertion?]]</t>
+
+
+
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -722,10 +742,6 @@
 
       <?rfc include="reference.RFC.7638"?>
 
-      <?rfc include="reference.RFC.7858"?>
-
-      <?rfc include="reference.RFC.8094"?>
-
       <?rfc include="reference.RFC.6838"?>
 
       <?rfc include="reference.RFC.2046"?>
@@ -795,8 +811,8 @@
      },
      "transferdata":false,
      "privacyurl": "https://example.com/commitment-to-privacy/"
-  } 
-  "server":{"adn":["example.com"]},
+  },
+  "server":{"adn":["example.com"]}
 }
 ]]></artwork>
       </figure>
