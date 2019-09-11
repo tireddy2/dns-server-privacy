@@ -70,59 +70,63 @@
     <workgroup>DPRIVE WG</workgroup>
 
     <abstract>
-      <t>Users want to control how their DNS queries are handled by
-      DNS servers so they can configure their system to use DNS servers
-      that comply with their privacy expectations.</t>
-     <t>This document defines a mechanism for a DNS server to
-      communicate its privacy policy to a DNS client.  This
-      communication is cryptographically signed by multiple parties to
-      attest to its authenticity.  By evaluating the DNS privacy
-      policy and the signatories, the DNS client can choose a DNS
-      server that best supports its desired privacy policies.  The
-      privacy assertion token is particularly useful for
-      DNS-over-(D)TLS and DNS-over-HTTPS servers, both in the cloud
-      and those discovered on the local network.</t>
+      <t>Users want to control how their DNS queries are handled by DNS
+      servers so they can configure their system to use DNS servers that
+      comply with their privacy expectations.</t>
+
+      <t>This document defines a mechanism for a DNS server to communicate its
+      privacy policy to a DNS client. This communication is cryptographically
+      signed to attest to its authenticity. By evaluating the DNS privacy
+      policy and the signatory, the DNS client can choose a DNS server that
+      best supports its desired privacy policies. The privacy assertion token
+      is particularly useful for DNS-over-(D)TLS and DNS-over-HTTPS servers,
+      both public resolvers and those discovered on the local network.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="intro" title="Introduction">
-      <t><xref target="RFC7626"></xref> discusses DNS privacy
-      considerations in both "on the wire" (Section 2.4
-      of <xref target="RFC7626"></xref>) and "in the server" (Section
-      2.5 of <xref target="RFC7626"></xref> contexts. In recent years
-      there has also been an increase in the availability of "public
-      resolvers" <xref target="I-D.ietf-dnsop-terminology-bis"></xref>
-      which DNS clients may be pre-configured to use instead of the
-      default network resolver because they offer a specific feature
-      (e.g., good reachability, encrypted transport, strong privacy
-      policy, filtering (or lack of), etc.). While a human can read
-      the privacy policy of a DNS sever operator, this information is
-      not computer-parsable to allow automatic DNS server selection by
-      the DNS client software.  For DNS servers operated on the local
-      network, the DNS client can be securely bootstrapped to discover
-      and authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers
-      provided by a local network using the technique proposed
-      in <xref target="I-D.reddy-dprive-bootstrap-dns-server"></xref>.
-      By creating a computer-parsable DNS server privacy policy, the
-      DNS client can automatically allow using a DNS server on the
-      local network that complies with the DNS client's privacy
-      policy.</t>
+      <t><xref target="RFC7626"></xref> discusses DNS privacy considerations
+      in both "on the wire" (Section 2.4 of <xref target="RFC7626"></xref>)
+      and "in the server" (Section 2.5 of <xref target="RFC7626"></xref>
+      contexts. In recent years there has also been an increase in the
+      availability of "public resolvers" <xref
+      target="I-D.ietf-dnsop-terminology-bis"></xref> which DNS clients may be
+      pre-configured to use instead of the default network resolver because
+      they offer a specific feature (e.g., good reachability, encrypted
+      transport, strong privacy policy, filtering (or lack of), etc.). While a
+      human can read the privacy policy of a DNS server operator, this
+      information is not machine-parsable to allow automatic DNS server
+      selection by the DNS client software. For DNS servers operated on the
+      local network, the DNS client can be securely bootstrapped to discover
+      and authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers provided by
+      a local network using the technique proposed in <xref
+      target="I-D.reddy-dprive-bootstrap-dns-server"></xref>. By creating a
+      computer-parsable DNS server privacy policy, the DNS client can
+      automatically allow using a DNS server on the local network that
+      complies with the DNS client's privacy policy.</t>
 
-      <t>This document defines a method to convey the that
-      cryptographically verifies the privacy policy information of a
-      DNS server, such as a DNS-over-(D)TLS or DNS-over-HTTPS
-      server. The privacy assertion token is cryptographically signed
-      either by (a) the domain hosting the DNS server or (b) by a
-      third party who performed privacy and security audit of the DNS
-      server. The privacy policy information will be attested using
-      "Organization Validation" (OV) or "Extended Validation" (EV)
-      certificates to avoid bad actors taking advantage of this
-      mechanism to advertize DNS-over-(D)TLS and DNS-over-HTTPS
-      servers for illegitimate and fraudulent purposes meant to trick
-      DNS clients into believing that they are using a legitimate
-      DNS-over-(D)TLS or DNS-over-HTTPS server hosted to provide
-      privacy for DNS transactions.</t>
+      <t>This document defines a method for creating and validating a token
+      that cryptographically verifies the privacy policy information of a DNS
+      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server. The privacy
+      assertion token is cryptographically signed either by (a) the domain
+      hosting the DNS server or (b) by a third party who performed privacy and
+      security audit of the DNS server. The privacy policy information will be
+      attested using "Organization Validation" (OV) or "Extended Validation"
+      (EV) certificates to avoid bad actors taking advantage of this mechanism
+      to advertize DNS-over-(D)TLS and DNS-over-HTTPS servers for illegitimate
+      and fraudulent purposes meant to trick DNS clients into believing that
+      they are using a legitimate DNS-over-(D)TLS or DNS-over-HTTPS server
+      hosted to provide privacy for DNS transactions.</t>
+
+      <t>The cryptographically signed privacy statement allows a DNS client to
+      connect to multiple DNS servers and select the DNS server that has the
+      best combination of privacy policy signed by the client's trusted CAs.
+      For example, a browser with pre-configured DNS-over-HTTPS server can
+      discover the DNS-over-HTTPS server provided the local network, connects
+      to both the DNS servers, gets the privacy policy information from each
+      of the DNS servers, validates the signatures and uses a server that
+      meets the privacy preserving data policy requirements of the client.</t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -281,6 +285,15 @@
           issuance of the JWT. The time value should be of the format defined
           in <xref target="RFC7519"></xref> Section 2 NumericDate.</t>
         </section>
+
+        <section anchor="exp-header-parameter"
+                 title="&ldquo;exp&rdquo; - Expiration Time claim">
+          <t>The JSON claim MUST include the &ldquo;exp&rdquo; <xref
+          target="RFC7519"></xref> Section 4.1.4 defined claim Expiration
+          Time. As defined the &ldquo;exp&rdquo; should be set to specify the
+          expiration time on or after which the JWT is not accepted for
+          processing.</t>
+        </section>
       </section>
 
       <section anchor="pat_claims" title="PAT specific claims">
@@ -327,80 +340,41 @@
                 address is PII. This is a mandatory attribute.</t>
 
                 <t hangText="logging:">If the transaction data (e.g., DNS
-                messages) is logged and the duration that data is stored.
-                This
-                mandatory attribute has the following structure: <list
-                    style="hanging">
-                    <t hangText="log:">If the parameter value is set to
-                    'true', transaction data is logged.</t>
-
-                    <t hangText="duration:">Logging duration is represented in
-                    hours. A negative one (-1) of logging duration indicates
-                    indefinite duration.</t>
-                  </list></t>
+                messages) is logged and the duration that data is stored. A
+                value of negative one (-1) indicates indefinite duration of
+                logging transaction data. A value of zero (0) indicates no
+                logging. Logging duration is represented in hours. If anyone
+                of the attributes 'useridentity', 'notifyuser' and 'analytics'
+                are not set to the value zero, 'logging' attribute MUST NOT be
+                set to the value zero. This is a mandatory attribute. </t>
 
                 <t hangText="useridentity:">If the user identity that sent the
                 DNS query is logged and the duration that data is retained.
-                User identity such as username, IP address, MAC
-                address or personally identifiable data 
-
-[[dwing: My system
-queries dyn.danwing.org when it starts, which is pretty darn personally-
-identifying.  The 'personally identifiable data' is //very// slippery.  How
-should this be set??]]. 
-
-
-This mandatory
-                attribute has the following structure: <list style="hanging">
-                    <t hangText="log:">If the parameter value is set to
-                    'true', user identity is logged.</t>
-
-                    <t hangText="duration:">Logging duration is represented in
-                    hours. A negative one (-1) of logging duration indicates
-                    indefinite duration.</t>
-                  </list></t>
+                User identity such as username, IP address, MAC address, user
+                DNS query patterns or any other personally identifiable data.
+                The server should also discard or minimize correlation data
+                (Section 5.2.4 of <xref
+                target="I-D.ietf-dprive-bcp-op"></xref>) that can be used to
+                identify the end user. A value of negative one (-1) indicates
+                indefinite duration of logging user identity. A value of zero
+                (0) indicates no logging. Logging duration is represented in
+                hours. This is a mandatory attribute. </t>
 
                 <t hangText="notifyuser:">If the transaction data is logged to
-                notify the user access to certain domains is blocked, the period for which the transaction data
-                is stored. This optional attribute has the following
-                structure: <list style="hanging">
-                    <t hangText="log:">If the parameter value is set to
-                    'true', transaction data is logged.</t>
-
-                    <t hangText="duration:">Logging duration is represented in
-                    hours. A negative one (-1) of logging duration indicates
-                    indefinite duration.</t>
-                  </list></t>
-
-                <t hangText="knownmalware:">If access to malicious domains
-
-[[dwing: why is attributed called 'malware', but text says 'malicious
-domains'?  Confusing.  What are we trying to capture/describe here,
-really?]]
-
- is
-                logged, the period for which access to malicious domains is
-                stored. This optional attribute has the following structure:
-                <list style="hanging">
-                    <t hangText="log:">If the parameter value is set to
-                    'true', transaction data is logged.</t>
-
-                    <t hangText="duration:">Logging duration is represented in
-                    hours. A negative one (-1) of logging duration indicates
-                    indefinite duration.</t>
-                  </list></t>
+                notify the user access to certain domains is blocked, the
+                period for which the transaction data is stored. A value of
+                negative one (-1) indicates indefinite duration of logging
+                transaction data to notify the user. A value of zero (0)
+                indicates no logging. Logging duration is represented in
+                hours. This is a optional attribute.</t>
 
                 <t hangText="analytics:">If the transaction data is logged for
-                analytics (e.g. to detect malicious domains), the period for
-                which the transaction data is stored.. This optional attribute
-                has the following structure: <list style="hanging">
-                    <t hangText="log:">If the parameter value is set to
-                    'true', transaction data is logged.</t>
-
-                    <t hangText="duration:">Logging duration is represented in
-                    hours. A negative one (-1) of logging duration indicates
-                    indefinite duration.</t>
-                  </list></t>
+                analytics (e.g. To detect malicious domains), the period for
+                which the transaction data is stored. A value of negative one
+                (-1) indicates indefinite duration of logging transaction data
+                for analytics. A value of zero (0) indicates no logging.
+                Logging duration is represented in hours. This is a optional
+                attribute. </t>
 
                 <t hangText="sharedata:">If the transaction data is shared
                 with partners or not, and if the transaction data is shared
@@ -409,14 +383,18 @@ really?]]
                 mandatory attribute has the following structure: <list
                     style="hanging">
                     <t hangText="sharepartners:">If the parameter value is set
-                    to 'true', transaction data is is shared with
-                    partners.</t>
+                    to 'true', transaction data is shared with partners.</t>
 
-                    <t hangText="partners:">List of partner names. </t>
+                    <t hangText="partners:">List of partner names. If
+                    'sharepartners' value is set to false, 'partners' MUST NOT
+                    be present in the 'sharedata' structure.</t>
 
                     <t hangText="anonymizeddata:">If the parameter value is
-                    set to 'true', anonymized transaction data is is shared
-                    with partners.</t>
+                    set to 'true', anonymized transaction data is shared with
+                    partners. The anonymized transaction data cannot be used
+                    by the partner to identify the end user. If
+                    'sharepartners' value is set to false, 'anonymizeddata'
+                    MUST NOT be present in the 'sharedata' structure.</t>
                   </list></t>
 
                 <t hangText="transferdata:">If the transaction data is shared
@@ -427,7 +405,7 @@ really?]]
                 <t hangText="qnameminimization:">If the DNS server implements
                 QNAME minimisation <xref target="RFC7816"></xref> to improve
                 DNS privacy. If the parameter value is set to 'true', QNAME
-                minimisation is supported by the DNS server. </t>
+                minimisation is supported by the DNS server.</t>
 
                 <t hangText="privacyurl:">A URL that points to the privacy
                 policy information of the DNS server. This is a mandatory
@@ -445,16 +423,17 @@ really?]]
 
             <figure>
               <artwork><![CDATA[{
-  "server":{"adn":["example.com"]},
+  "server":{
+      "adn":["example.com"]
+  },
   "iat":1443208345,
+  "exp":1443640345,
   "privinfo": {
      "ipaddresspii":true,
-     "logging":{
-     "log":true,
-     "duration":24
-     },
-     "sharedata":{
-     "sharepartners":false
+     "logging": 24,
+     "useridentity": 24,
+     "sharedata": {
+         "sharepartners": false
      },
      "transferdata":false,
      "privacyurl": "https://example.com/commitment-to-privacy/"
@@ -502,7 +481,7 @@ really?]]
       validation. Specifying new claims follows the baseline JWT procedures
       (<xref target="RFC7519"></xref> Section 10.1). Understanding new claims
       on the DNS client is optional. The creator of a PAT object cannot assume
-      that the DNS client will understand the new claims. </t>
+      that the DNS client will understand the new claims.</t>
     </section>
 
     <section anchor="json_serialization"
@@ -544,16 +523,17 @@ really?]]
 
         <figure>
           <artwork><![CDATA[{
-  "server":{"adn":["example.com"]},
+  "server":{
+      "adn":["example.com"]
+  },
   "iat":1443208345,
+  "exp":1443640345,
   "privinfo": {
      "ipaddresspii":true,
-     "logging":{
-     "log":true,
-     "duration":24
-     },
-     "sharedata":{
-     "sharepartners":false
+     "logging": 24,
+     "useridentity": 24,
+     "sharedata": {
+         "sharepartners": false
      },
      "transferdata":false,
      "privacyurl": "https://example.com/commitment-to-privacy/"
@@ -563,18 +543,17 @@ really?]]
         </figure>
 
         <t>The parent members of the JSON object are as follows, in
-        lexicographic order: "iat", "privinfo", "server".</t>
-
+        lexicographic order: "exp", "iat", "privinfo", "server".</t>
 
         <t>The final constructed deterministic JSON serialization
         representation, with whitespace and line breaks removed, (with line
         breaks used for display purposes only) is:</t>
 
         <figure>
-          <artwork><![CDATA[{"server":{"adn":["example.com"]},"iat":1443208345,"privinfo":
-{"ipaddresspii":true,"logging":{"log":true,"duration":24},
+          <artwork><![CDATA[{"exp":1443640345,"iat":1443208345,"privinfo":{"ipaddresspii":true,
+"logging":24,"privacyurl":"https://example.com/commitment-to-privacy/",
 "sharedata":{"sharepartners":false},"transferdata":false,
-"privacyurl": "https://example.com/commitment-to-privacy/"}}
+"useridentity":24},"server":{"adn":["example.com"]}}
 ]]></artwork>
         </figure>
       </section>
@@ -589,30 +568,23 @@ really?]]
       servers offer privacy but exactly do the opposite to invade the privacy
       of the user. Bad actor can get a domain name, host DNS-over-(D)TLS and
       DNS-over-HTTPS servers, and get the DNS server certificate signed by a
-      CA.  The privacy policy information will have to be attested using OV or
-      EV certificates to prevent the attack.  If the PAT object is asserted by
-      a third party, it can do a "time of check" but the DNS server is
-      susceptible of "time of use" attack, hence the PAT object needs to be
-      also asserted by the domain hosting the DNS server.</t>
+      CA. The privacy policy information will have to be attested using OV or
+      EV certificates to prevent the attack. Alternatively, the DNS client
+      will have to be configured to trust the leaf of the signer of the PAT
+      object. That is, trust of the signer MUST NOT be determined by
+      validating the signer via the OS or browser trust chain because that
+      would allow any arbitrary entity to operate a DNS server and assert any
+      sort of privacy policy.</t>
 
-<t>[[dwing new text to replace all of above paragraph: The DNS client
-MUST be configured to trust the leaf of the signer of the PAT object.
-That is, trust of the signer MUST NOT be determined by validating
-the signer via the OS or browser trust chain because that would allow
-any arbitrary entity to operate a DNS server and assert any sort of
-privacy policy.]]</t>
-
-<t>[[dwing: what is the 'time of check' mentioned?  Text does not
-explain that attack.  Is it trying to say that a DNS server might have
-complied with the privacy policy when it was audited (by the 3rd party)
-but could now be in non-compliance with its privacy policy?  If so, let's
-discuss that more carefully [separate paragraph, at least!] but also
-explain how old the domain's re-assertion of compliance is allowed to
-be.  Perhaps every 7 days is reasonable for the local domain's 
-re-assertion?]]</t>
-
-
-
+      <t>If the PAT object is asserted by a third party, it can do a "time of
+      check" but the DNS server is susceptible of "time of use" attack. In
+      other words, the DNS server might have complied with the privacy policy
+      when it was audited (by the 3rd party) but could now be in
+      non-compliance with its privacy policy, hence the PAT object needs to be
+      also asserted by the domain hosting the DNS server. In addition, the PAT
+      object needs to have a short expiration time (e.g., 15 days) to ensure
+      the DNS server's domain re-asserts the privacy policy information and
+      limits the damage from change in privacy policy and mis-issuance.</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -687,8 +659,8 @@ re-assertion?]]</t>
 
               <t>Claim Name: &ldquo;privinfo&rdquo;</t>
 
-              <t>Claim Description: Privacy policy information of DNS server.
-              </t>
+              <t>Claim Description: Privacy policy information of DNS
+              server.</t>
 
               <t>Change Controller: IESG</t>
 
@@ -700,11 +672,11 @@ re-assertion?]]</t>
 
       <section anchor="resolver-information"
                title="DNS Resolver Information Registration">
-        <t>IANA will add the names ipaddresspii, logging, log, duration,
-        useridentity, notifyuser, knownmalware, analytics, sharedata,
-        transferdata, qnameminimization, privacyurl and auditurl to the DNS
-        Resolver Information registry defined in Section 5.2 of <xref
-        target="I-D.ietf-dnsop-resolver-information"></xref>. </t>
+        <t>IANA will add the names ipaddresspii, logging, useridentity,
+        notifyuser, analytics, sharedata, transferdata, qnameminimization,
+        privacyurl and auditurl to the DNS Resolver Information registry
+        defined in Section 5.2 of <xref
+        target="I-D.ietf-dnsop-resolver-information"></xref>.</t>
       </section>
     </section>
 
@@ -774,6 +746,8 @@ re-assertion?]]</t>
       <?rfc include="reference.RFC.8225"?>
 
       <?rfc include='reference.I-D.reddy-dprive-bootstrap-dns-server'?>
+
+      <?rfc include='reference.I-D.ietf-dprive-bcp-op'?>
     </references>
 
     <section anchor="example-es256-based-pat-jws-serialization-and-signature"
@@ -799,20 +773,21 @@ re-assertion?]]</t>
 
       <figure>
         <artwork><![CDATA[{
+  "server":{
+      "adn":["example.com"]
+  },
   "iat":1443208345,
+  "exp":1443640345,
   "privinfo": {
      "ipaddresspii":true,
-     "logging":{
-     "log":true,
-     "duration":24
-     },
-     "sharedata":{
-     "sharepartners":false
+     "logging": 24,
+     "useridentity": 24,
+     "sharedata": {
+         "sharepartners": false
      },
      "transferdata":false,
      "privacyurl": "https://example.com/commitment-to-privacy/"
-  },
-  "server":{"adn":["example.com"]}
+  } 
 }
 ]]></artwork>
       </figure>
@@ -821,11 +796,10 @@ re-assertion?]]</t>
       display purposes only):</t>
 
       <figure>
-        <artwork><![CDATA[
-{"server":{"adn":["example.com"]},"iat":1443208345,"privinfo":
-{"ipaddresspii":true,"logging":{"log":true,"duration":24},
-"sharedata":{"sharepartners":false},"transferdata":false,
-"privacyurl": "https://example.com/commitment-to-privacy/"}}
+        <artwork><![CDATA[{"exp":1443640345,"iat":1443208345,"privinfo":{"ipaddresspii":true,"logging":24,
+"privacyurl":"https://example.com/commitment-to-privacy/","sharedata":{
+"sharepartners":false},"transferdata":false,"useridentity":24},
+"server":{"adn":["example.com"]}}
 ]]></artwork>
       </figure>
 
@@ -834,11 +808,13 @@ re-assertion?]]</t>
 
       <figure>
         <artwork><![CDATA[
-eyJzZXJ2ZXIiOnsiYWRuIjpbImV4YW1wbGUuY29tIl19LCJpYXQiOjE0NDMyMDg
-zNDUsInByaXZpbmZvIjp7ImlwYWRkcmVzc3BpaSI6dHJ1ZSwibG9nZ2luZyI6ey
-Jsb2ciOnRydWUsImR1cmF0aW9uIjoyNH0sInNoYXJlZGF0YSI6eyJzaGFyZXBhc
-nRuZXJzIjpmYWxzZX0sInRyYW5zZmVyZGF0YSI6ZmFsc2UsInByaXZhY3l1cmwi
-OiJodHRwczovL2V4YW1wbGUuY29tL2NvbW1pdG1lbnQtdG8tcHJpdmFjeS8ifX0
+eyJleHAiOjE0NDM2NDAzNDUsImlhdCI6MTQ0MzIwODM0NSwicHJpdmluZm8iOnsi
+aXBhZGRyZXNzcGlpIjp0cnVlLCJsb2dnaW5nIjoyNCwicHJpdmFjeXVybCI6Imh0
+dHBzOi8vZXhhbXBsZS5jb20vY29tbWl0bWVudC10by1wcml2YWN5LyIsInNoYXJl
+ZGF0YSI6eyJzaGFyZXBhcnRuZXJzIjpmYWxzZX0sInRyYW5zZmVyZGF0YSI6ZmFs
+c2UsInVzZXJpZGVudGl0eSI6MjR9LCJzZXJ2ZXIiOnsiYWRuIjpbImV4YW1wbGUu
+Y29tIl19fQ
+
 ]]></artwork>
       </figure>
 
@@ -871,8 +847,9 @@ OiJodHRwczovL2V4YW1wbGUuY29tL2NvbW1pdG1lbnQtdG8tcHJpdmFjeS8ifX0
 
       <figure>
         <artwork><![CDATA[
-eyJhbGciOiJFUzI1NiIsInR5cCI6InBhdCIsIng1dSI6Imh0dHBzOi8vY2Vyd
-C5leGFtcGxlLm9yZy9wYXQuY2VyIn0
+eyJhbGciOiJFUzI1NiIsInR5cCI6InBhdCIsIng1dSI6Imh0dHBzOi8vY2VydC5l
+eGFtcGxlLm9yZy9wYXQuY2VyIn0
+
 ]]></artwork>
       </figure>
 
@@ -883,8 +860,9 @@ C5leGFtcGxlLm9yZy9wYXQuY2VyIn0
 
       <figure>
         <artwork><![CDATA[
-KKvvZ-RtbCSI7UybSqsC8Lg9wdFYZnYOzbYom1dgewutq2l_Hqc16gmIT9PhWiS
-nCrz7Tx141RyZKPjXLW9jWA
+LEyaZpkJWVeJiQXdh6stCUo5VnLO56p9nTNsG8xhqpQMoJWc4j46Ze_43wPG-vHb
+Xq7BaVIfdb_Lw3BcKr92Cw
+
 ]]></artwork>
       </figure>
 
@@ -896,26 +874,18 @@ nCrz7Tx141RyZKPjXLW9jWA
 
       <figure>
         <artwork><![CDATA[
-eyJhbGciOiJFUzI1NiIsInR5cCI6InBhc3Nwb3J0IiwieDV1IjoiaHR0cHM6Ly9j
-ZXJ0LmV4YW1wbGUub3JnL3Bhc3Nwb3J0LmNlciJ9
-.
-eyJkZXN0Ijp7InVyaSI6WyJzaXA6YWxpY2VAZXhhbXBsZS5jb20iXX0sImlhdCI
-6MTQ3MTM3NTQxOCwib3JpZyI6eyJ0biI6IjEyMTU1NTUxMjEyIn19
-.
-VLBCIVDCaeK6M4hLJb6SHQvacAQVvoiiEOWQ_iUkqk79UD81fHQ0E1b3_GluIkb
-a7UWYRM47ZbNFdOJquE35cw
-
 eyJhbGciOiJFUzI1NiIsInR5cCI6InBhdCIsIng1dSI6Imh0dHBzOi8vY2VydC5l
 eGFtcGxlLm9yZy9wYXQuY2VyIn0
 .
-eyJzZXJ2ZXIiOnsiYWRuIjpbImV4YW1wbGUuY29tIl19LCJpYXQiOjE0NDMyMDgz
-NDUsInByaXZpbmZvIjp7ImlwYWRkcmVzc3BpaSI6dHJ1ZSwibG9nZ2luZyI6eyJs
-b2ciOnRydWUsImR1cmF0aW9uIjoyNH0sInNoYXJlZGF0YSI6eyJzaGFyZXBhcnRu
-ZXJzIjpmYWxzZX0sInRyYW5zZmVyZGF0YSI6ZmFsc2UsInByaXZhY3l1cmwiOiJo
-dHRwczovL2V4YW1wbGUuY29tL2NvbW1pdG1lbnQtdG8tcHJpdmFjeS8ifX0
+eyJleHAiOjE0NDM2NDAzNDUsImlhdCI6MTQ0MzIwODM0NSwicHJpdmluZm8iOnsi
+aXBhZGRyZXNzcGlpIjp0cnVlLCJsb2dnaW5nIjoyNCwicHJpdmFjeXVybCI6Imh0
+dHBzOi8vZXhhbXBsZS5jb20vY29tbWl0bWVudC10by1wcml2YWN5LyIsInNoYXJl
+ZGF0YSI6eyJzaGFyZXBhcnRuZXJzIjpmYWxzZX0sInRyYW5zZmVyZGF0YSI6ZmFs
+c2UsInVzZXJpZGVudGl0eSI6MjR9LCJzZXJ2ZXIiOnsiYWRuIjpbImV4YW1wbGUu
+Y29tIl19fQ
 .
-KKvvZ-RtbCSI7UybSqsC8Lg9wdFYZnYOzbYom1dgewutq2l_Hqc16gmIT9PhWiSn
-Crz7Tx141RyZKPjXLW9jWA
+Ugan30Bkpngo4_Igzsig0M-nbZPbELBO0KQgEkeruImNJBofyTfzTLwnU7aPcKg7
+8bSBpUhH0dROdzmlEfuRRw
 
 ]]></artwork>
       </figure>
@@ -925,9 +895,10 @@ Crz7Tx141RyZKPjXLW9jWA
         <figure>
           <artwork><![CDATA[
 -----BEGIN PRIVATE KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9
-q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
------END PRIVATE KEY??
+MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2
+OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r
+1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G
+-----END PRIVATE KEY-----
 ]]></artwork>
         </figure>
       </section>
@@ -937,9 +908,8 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
         <figure>
           <artwork><![CDATA[
 -----BEGIN PUBLIC KEY-----
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgevZzL1gdAFr88hb2
-OF/2NxApJCzGCEDdfSp6VQO30hyhRANCAAQRWz+jn65BtOMvdyHKcvjBeBSDZH2r
-1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEVs/o5+uQbTjL3chynL4wXgUg2R9
+q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 -----END PUBLIC KEY-----
 ]]></artwork>
         </figure>
