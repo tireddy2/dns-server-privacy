@@ -108,21 +108,12 @@
 
       <t>This document defines a method for creating and validating a token
       that cryptographically verifies the privacy policy information of a DNS
-      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server. The privacy
-      assertion token is cryptographically signed either by (a) the domain
-      hosting the DNS server or (b) by a third party who performed privacy and
-      security audit of the DNS server. The privacy policy information will be
-      attested using "Organization Validation" (OV) or "Extended Validation"
-      (EV) certificates to avoid bad actors taking advantage of this mechanism
-      to advertize DNS-over-(D)TLS and DNS-over-HTTPS servers for illegitimate
-      and fraudulent purposes meant to trick DNS clients into believing that
-      they are using a legitimate DNS-over-(D)TLS or DNS-over-HTTPS server
-      hosted to provide privacy for DNS transactions.</t>
+      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server. </t>
 
       <t>The cryptographically signed privacy statement allows a DNS client to
-      connect to multiple DNS servers and select the DNS server that has the
-      best combination of privacy policy signed by the client's trusted CAs.
-      For example, a browser with pre-configured DNS-over-HTTPS server can
+      connect to multiple DNS servers and select the DNS server that adheres
+      to the privacy preserving data policy requirements of the client. For
+      example, a browser with pre-configured DNS-over-HTTPS server can
       discover the DNS-over-HTTPS server provided the local network, connects
       to both the DNS servers, gets the privacy policy information from each
       of the DNS servers, validates the signatures and uses a server that
@@ -346,7 +337,7 @@
                 logging. Logging duration is represented in hours. If anyone
                 of the attributes 'useridentity', 'notifyuser' and 'analytics'
                 are not set to the value zero, 'logging' attribute MUST NOT be
-                set to the value zero. This is a mandatory attribute. </t>
+                set to the value zero. This is a mandatory attribute.</t>
 
                 <t hangText="useridentity:">If the user identity that sent the
                 DNS query is logged and the duration that data is retained.
@@ -379,9 +370,10 @@
                 <t hangText="sharedata:">If the transaction data is shared
                 with partners or not, and if the transaction data is shared
                 with partners, the names of the partners. If anonymized data
-                or client identifiable data is shared with partners. This
-                mandatory attribute has the following structure: <list
-                    style="hanging">
+                or client identifiable data is shared with partners. The term
+                "anonymization" is defined in Section 5.2.2 of <xref
+                target="I-D.ietf-dprive-bcp-op"></xref>. This mandatory
+                attribute has the following structure: <list style="hanging">
                     <t hangText="sharepartners:">If the parameter value is set
                     to 'true', transaction data is shared with partners.</t>
 
@@ -391,10 +383,9 @@
 
                     <t hangText="anonymizeddata:">If the parameter value is
                     set to 'true', anonymized transaction data is shared with
-                    partners. The anonymized transaction data cannot be used
-                    by the partner to identify the end user. If
-                    'sharepartners' value is set to false, 'anonymizeddata'
-                    MUST NOT be present in the 'sharedata' structure.</t>
+                    partners. If 'sharepartners' value is set to false,
+                    'anonymizeddata' MUST NOT be present in the 'sharedata'
+                    structure.</t>
                   </list></t>
 
                 <t hangText="transferdata:">If the transaction data is shared
@@ -453,7 +444,22 @@
       the lexicographic ordering and white space rules described in <xref
       target="pat_header"></xref> and <xref target="pat_payload"></xref>, and
       JSON serialization rules in <xref target="json_serialization"></xref> of
-      this document MUST be followed.</t>
+      this document MUST be followed. </t>
+
+      <t>The PAT is cryptographically signed by the domain hosting the DNS
+      server and optionally by a third party who performed privacy and
+      security audit of the DNS server. The privacy policy information will be
+      attested using "Organization Validation" (OV) or "Extended Validation"
+      (EV) certificates to avoid bad actors taking advantage of this mechanism
+      to advertise DNS-over-(D)TLS and DNS-over-HTTPS servers for illegitimate
+      and fraudulent purposes meant to trick DNS clients into believing that
+      they are using a legitimate DNS-over-(D)TLS or DNS-over-HTTPS server
+      hosted to provide privacy for DNS transactions. Alternatively, the DNS
+      client will have to be configured to trust the leaf of the signer of the
+      PAT object. That is, trust of the signer MUST NOT be determined by
+      validating the signer via the OS or browser trust chain because that
+      would allow any arbitrary entity to operate a DNS server and assert any
+      sort of privacy policy.</t>
 
       <t><xref
       target="example-es256-based-pat-jws-serialization-and-signature"></xref>
@@ -568,23 +574,22 @@
       servers offer privacy but exactly do the opposite to invade the privacy
       of the user. Bad actor can get a domain name, host DNS-over-(D)TLS and
       DNS-over-HTTPS servers, and get the DNS server certificate signed by a
-      CA. The privacy policy information will have to be attested using OV or
-      EV certificates to prevent the attack. Alternatively, the DNS client
-      will have to be configured to trust the leaf of the signer of the PAT
-      object. That is, trust of the signer MUST NOT be determined by
-      validating the signer via the OS or browser trust chain because that
-      would allow any arbitrary entity to operate a DNS server and assert any
-      sort of privacy policy.</t>
+      CA. The privacy policy information will have to be attested using OV/EV
+      certificates or a PAT object signer trusted by the DNS client to prevent
+      the attack. </t>
 
       <t>If the PAT object is asserted by a third party, it can do a "time of
-      check" but the DNS server is susceptible of "time of use" attack. In
-      other words, the DNS server might have complied with the privacy policy
-      when it was audited (by the 3rd party) but could now be in
-      non-compliance with its privacy policy, hence the PAT object needs to be
-      also asserted by the domain hosting the DNS server. In addition, the PAT
-      object needs to have a short expiration time (e.g., 15 days) to ensure
-      the DNS server's domain re-asserts the privacy policy information and
-      limits the damage from change in privacy policy and mis-issuance.</t>
+      check" but the DNS server is susceptible of "time of use" attack. For
+      example, changes to privacy policy of the DNS server like sharing
+      identifiable transaction data with partners can cause a disagreement
+      between the PAT object and the DNS server operation. In other words, the
+      DNS server might have complied with the privacy policy when it was
+      audited (by the 3rd party) but could now be in non-compliance with its
+      privacy policy, hence the PAT object needs to be also asserted by the
+      domain hosting the DNS server. In addition, the PAT object needs to have
+      a short expiration time (e.g., 7 days) to ensure the DNS server's domain
+      re-asserts the privacy policy information and limits the damage from
+      change in privacy policy and mis-issuance.</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
