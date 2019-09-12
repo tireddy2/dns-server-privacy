@@ -686,8 +686,8 @@
     </section>
 
     <section anchor="acknowledgments" title="Acknowledgments">
-      <t>This specification leverages some of the work that has already been
-      done in <xref target="RFC8225"></xref>.</t>
+      <t>This specification leverages some of the work that has been done in
+      <xref target="RFC8225"></xref>.</t>
     </section>
   </middle>
 

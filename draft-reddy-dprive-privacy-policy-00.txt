@@ -739,8 +739,8 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
 
 11.  Acknowledgments
 
-   This specification leverages some of the work that has already been
-   done in [RFC8225].
+   This specification leverages some of the work that has been done in
+   [RFC8225].
 
 12.  References
 
