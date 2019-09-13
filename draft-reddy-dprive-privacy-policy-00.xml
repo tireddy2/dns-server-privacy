@@ -108,7 +108,7 @@
 
       <t>This document defines a method for creating and validating a token
       that cryptographically verifies the privacy policy information of a DNS
-      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server. </t>
+      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server.</t>
 
       <t>The cryptographically signed privacy statement allows a DNS client to
       connect to multiple DNS servers and select the DNS server that adheres
@@ -283,7 +283,11 @@
           target="RFC7519"></xref> Section 4.1.4 defined claim Expiration
           Time. As defined the &ldquo;exp&rdquo; should be set to specify the
           expiration time on or after which the JWT is not accepted for
-          processing.</t>
+          processing. The PAT object should generally expire after a resonable
+          duration, a short expiration time for the PAT object periodically
+          reaffirms the privacy policy information of the DNS server to the
+          client and ensures the client does not use outdated privacy policy
+          information. </t>
         </section>
       </section>
 
@@ -349,7 +353,7 @@
                 identify the end user. A value of negative one (-1) indicates
                 indefinite duration of logging user identity. A value of zero
                 (0) indicates no logging. Logging duration is represented in
-                hours. This is a mandatory attribute. </t>
+                hours. This is a mandatory attribute.</t>
 
                 <t hangText="notifyuser:">If the transaction data is logged to
                 notify the user access to certain domains is blocked, the
@@ -365,7 +369,7 @@
                 (-1) indicates indefinite duration of logging transaction data
                 for analytics. A value of zero (0) indicates no logging.
                 Logging duration is represented in hours. This is a optional
-                attribute. </t>
+                attribute.</t>
 
                 <t hangText="sharedata:">If the transaction data is shared
                 with partners or not, and if the transaction data is shared
@@ -444,7 +448,7 @@
       the lexicographic ordering and white space rules described in <xref
       target="pat_header"></xref> and <xref target="pat_payload"></xref>, and
       JSON serialization rules in <xref target="json_serialization"></xref> of
-      this document MUST be followed. </t>
+      this document MUST be followed.</t>
 
       <t>The PAT is cryptographically signed by the domain hosting the DNS
       server and optionally by a third party who performed privacy and
@@ -576,7 +580,7 @@
       DNS-over-HTTPS servers, and get the DNS server certificate signed by a
       CA. The privacy policy information will have to be attested using OV/EV
       certificates or a PAT object signer trusted by the DNS client to prevent
-      the attack. </t>
+      the attack.</t>
 
       <t>If the PAT object is asserted by a third party, it can do a "time of
       check" but the DNS server is susceptible of "time of use" attack. For
