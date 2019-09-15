@@ -477,7 +477,7 @@
       third party who performed privacy and security audit of the DNS
       server.</t>
 
-      <t> <xref
+      <t><xref
       target="example-es256-based-pat-jws-serialization-and-signatures"></xref>
       of this document has a example of complete JWS JSON serialization
       representation with multiple signatures.</t>
@@ -932,7 +932,7 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 
     <section anchor="example-es256-based-pat-jws-serialization-and-signatures"
              title="Complete JWS JSON Serialization Representation with multiple Signatures">
-      <t>The JWS payload used in this example as as follows. </t>
+      <t>The JWS payload used in this example as as follows.</t>
 
       <t><figure>
           <artwork><![CDATA[{
@@ -971,11 +971,10 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 
       <t>The JWS protected Header value used for the first signature is same
       as that used in the example in <xref
-      target="example-es256-based-pat-jws-serialization-and-signatures"></xref>.
-      The X.509 private key used for the first signature is same as that used
-      in the example in <xref
-      target="x509-private-key-in-pkcs8-format-for-es256-example"></xref>.
-      </t>
+      target="example-es256-based-pat-jws-serialization-and-signature"></xref>.
+      The X.509 private key used for generating the first signature is same as
+      that used in the example in <xref
+      target="x509-private-key-in-pkcs8-format-for-es256-example"></xref>.</t>
 
       <t>The JWS Protected Header value used for the second signature is:</t>
 

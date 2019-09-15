@@ -1106,9 +1106,9 @@ Appendix B.  Complete JWS JSON Serialization Representation with
 "transferdata":false,"useridentity":24},"server":{"adn":["example.com"]}}
 
    The JWS protected Header value used for the first signature is same
-   as that used in the example in Appendix B.  The X.509 private key
-   used for the first signature is same as that used in the example in
-   Appendix A.1.
+   as that used in the example in Appendix A.  The X.509 private key
+   used for generating the first signature is same as that used in the
+   example in Appendix A.1.
 
    The JWS Protected Header value used for the second signature is:
 
