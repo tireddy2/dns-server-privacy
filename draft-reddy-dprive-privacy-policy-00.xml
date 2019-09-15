@@ -477,6 +477,11 @@
       third party who performed privacy and security audit of the DNS
       server.</t>
 
+      <t> <xref
+      target="example-es256-based-pat-jws-serialization-and-signatures"></xref>
+      of this document has a example of complete JWS JSON serialization
+      representation with multiple signatures.</t>
+
       <t>JWS <xref target="RFC7515"></xref> Section 5.1 Step 8 describes the
       method to create the final JWS Compact Serialization form of the PAT
       Token.</t>
