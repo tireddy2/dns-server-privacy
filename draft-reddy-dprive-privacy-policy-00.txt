@@ -139,7 +139,7 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
    bootstrapped to discover and authenticate DNS-over-(D)TLS and DNS-
    over-HTTPS servers provided by a local network using the technique
    proposed in [I-D.reddy-dprive-bootstrap-dns-server].  By creating a
-   computer-parsable DNS server privacy policy, the DNS client can
+   machine-parsable DNS server privacy policy, the DNS client can
    automatically allow using a DNS server on the local network that
    complies with the DNS client's privacy policy.
 
@@ -343,11 +343,11 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
    The JSON claim MUST include the "exp" [RFC7519] Section 4.1.4 defined
    claim Expiration Time.  As defined the "exp" should be set to specify
    the expiration time on or after which the JWT is not accepted for
-   processing.  The PAT object should generally expire after a resonable
-   duration.  A short expiration time for the PAT object periodically
-   reaffirms the privacy policy information of the DNS server to the
-   client and ensures the client does not use outdated privacy policy
-   information.
+   processing.  The PAT object should generally expire after a
+   reasonable duration.  A short expiration time for the PAT object
+   periodically reaffirms the privacy policy information of the DNS
+   server to the client and ensures the client does not use outdated
+   privacy policy information.
 
 5.2.  PAT specific claims
 
@@ -1076,7 +1076,7 @@ A.2.  X.509 Public Key for ES256 Example**
 Appendix B.  Complete JWS JSON Serialization Representation with
              multiple Signatures
 
-   The JWS payload used in this example as as follows.
+   The JWS payload used in this example as follows.
 
    {
      "server":{

@@ -102,7 +102,7 @@
       and authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers provided by
       a local network using the technique proposed in <xref
       target="I-D.reddy-dprive-bootstrap-dns-server"></xref>. By creating a
-      computer-parsable DNS server privacy policy, the DNS client can
+      machine-parsable DNS server privacy policy, the DNS client can
       automatically allow using a DNS server on the local network that
       complies with the DNS client's privacy policy.</t>
 
@@ -283,11 +283,11 @@
           target="RFC7519"></xref> Section 4.1.4 defined claim Expiration
           Time. As defined the &ldquo;exp&rdquo; should be set to specify the
           expiration time on or after which the JWT is not accepted for
-          processing. The PAT object should generally expire after a resonable
-          duration. A short expiration time for the PAT object periodically
-          reaffirms the privacy policy information of the DNS server to the
-          client and ensures the client does not use outdated privacy policy
-          information.</t>
+          processing. The PAT object should generally expire after a
+          reasonable duration. A short expiration time for the PAT object
+          periodically reaffirms the privacy policy information of the DNS
+          server to the client and ensures the client does not use outdated
+          privacy policy information.</t>
         </section>
       </section>
 
@@ -932,7 +932,7 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 
     <section anchor="example-es256-based-pat-jws-serialization-and-signatures"
              title="Complete JWS JSON Serialization Representation with multiple Signatures">
-      <t>The JWS payload used in this example as as follows.</t>
+      <t>The JWS payload used in this example as follows.</t>
 
       <t><figure>
           <artwork><![CDATA[{
