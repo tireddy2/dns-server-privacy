@@ -117,7 +117,16 @@
       discover the DNS-over-HTTPS server provided the local network, connects
       to both the DNS servers, gets the privacy policy information from each
       of the DNS servers, validates the signatures and uses a server that
-      meets the privacy preserving data policy requirements of the client.</t>
+      meets the privacy preserving data policy requirements of the client. If
+      both servers meet the privacy preserving data policy requirements of the
+      client, it can select to use the local DNS server. In addition, the
+      cryptographically signed privacy statement allows a DNS-over-(D)TLS or
+      DNS-over-HTTPS client to securely determine whether the local DNS server
+      performs DNS-based content filtering, and if the local server meets the
+      privacy preserving data policy requirements of the client, the client
+      can continue to use the local DNS-over-(D)TLS server to resolve DNS
+      queries and does not have to switch to the pre-configured public
+      resolver. </t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -331,8 +340,8 @@
             <t><list style="hanging">
                 <t hangText="ipaddresspii:">If the client IP address is
                 Personally Identifiable Information (PII) data or non
-                PII-data. If the parameter value is set to 'true',client IP
-                address is PII. This is a mandatory attribute.</t>
+                PII-data. If client IP address is PII, the parameter value is
+                set to 'true'. This is a mandatory attribute.</t>
 
                 <t hangText="logging:">If the transaction data (e.g., DNS
                 messages) is logged and the duration that data is stored. A
@@ -355,20 +364,25 @@
                 (0) indicates no logging. Logging duration is represented in
                 hours. This is a mandatory attribute.</t>
 
+                <t hangText="blockdomains:">If access to domains (e.g.,
+                malicious domains) is blocked or not. If access to domains is
+                blocked, the parameter value is set to 'true'. This is an
+                optional attribute. </t>
+
                 <t hangText="notifyuser:">If the transaction data is logged to
                 notify the user access to certain domains is blocked, the
                 period for which the transaction data is stored. A value of
                 negative one (-1) indicates indefinite duration of logging
                 transaction data to notify the user. A value of zero (0)
                 indicates no logging. Logging duration is represented in
-                hours. This is a optional attribute.</t>
+                hours. This is an optional attribute.</t>
 
                 <t hangText="analytics:">If the transaction data is logged for
-                analytics (e.g. To detect malicious domains), the period for
+                analytics (e.g., To detect malicious domains), the period for
                 which the transaction data is stored. A value of negative one
                 (-1) indicates indefinite duration of logging transaction data
                 for analytics. A value of zero (0) indicates no logging.
-                Logging duration is represented in hours. This is a optional
+                Logging duration is represented in hours. This is an optional
                 attribute.</t>
 
                 <t hangText="sharedata:">If the transaction data is shared
@@ -400,7 +414,8 @@
                 <t hangText="qnameminimization:">If the DNS server implements
                 QNAME minimisation <xref target="RFC7816"></xref> to improve
                 DNS privacy. If the parameter value is set to 'true', QNAME
-                minimisation is supported by the DNS server.</t>
+                minimisation is supported by the DNS server. This is a
+                mandatory attribute.</t>
 
                 <t hangText="privacyurl:">A URL that points to the privacy
                 policy information of the DNS server. This is a mandatory
@@ -408,7 +423,7 @@
 
                 <t hangText="auditurl:">A URL that points to the security
                 assessment report of the DNS server by a third party auditor.
-                This is a optional attribute.</t>
+                This is an optional attribute.</t>
               </list></t>
           </section>
 
@@ -810,10 +825,10 @@
       display purposes only):</t>
 
       <figure>
-        <artwork><![CDATA[{"exp":1443640345,"iat":1443208345,"privinfo":{"ipaddresspii":true,"logging":24,
-"privacyurl":"https://example.com/commitment-to-privacy/","sharedata":{
-"sharepartners":false},"transferdata":false,"useridentity":24},
-"server":{"adn":["example.com"]}}
+        <artwork><![CDATA[{"exp":1443640345,"iat":1443208345,"privinfo":{"ipaddresspii":true,
+"logging":24,"privacyurl":"https://example.com/commitment-to-privacy/",
+"sharedata":{"sharepartners":false},"transferdata":false,
+"useridentity":24},"server":{"adn":["example.com"]}}
 ]]></artwork>
       </figure>
 
@@ -961,9 +976,10 @@ q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
 
       <figure>
         <artwork><![CDATA[{"auditurl":"https://audit-example.com/privacyaudit","exp":1443640345,
-"iat":1443208345,"privinfo":{"ipaddresspii":true,"logging":24,"privacyurl":
-"https://example.com/commitment-to-privacy/","sharedata":{"sharepartners":false},
-"transferdata":false,"useridentity":24},"server":{"adn":["example.com"]}}
+"iat":1443208345,"privinfo":{"ipaddresspii":true,"logging":24,
+"privacyurl":"https://example.com/commitment-to-privacy/",
+"sharedata":{"sharepartners":false},"transferdata":false,
+"useridentity":24},"server":{"adn":["example.com"]}}
 ]]></artwork>
       </figure>
 
