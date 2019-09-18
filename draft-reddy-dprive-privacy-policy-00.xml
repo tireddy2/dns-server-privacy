@@ -79,8 +79,8 @@
       signed to attest to its authenticity. By evaluating the DNS privacy
       policy and the signatory, the DNS client can choose a DNS server that
       best supports its desired privacy policies. The privacy assertion token
-      is particularly useful for DNS-over-(D)TLS and DNS-over-HTTPS servers,
-      both public resolvers and those discovered on the local network.</t>
+      is particularly useful for DNS-over-TLS and DNS-over-HTTPS servers, both
+      public resolvers and those discovered on the local network.</t>
     </abstract>
   </front>
 
@@ -99,8 +99,8 @@
       information is not machine-parsable to allow automatic DNS server
       selection by the DNS client software. For DNS servers operated on the
       local network, the DNS client can be securely bootstrapped to discover
-      and authenticate DNS-over-(D)TLS and DNS-over-HTTPS servers provided by
-      a local network using the technique proposed in <xref
+      and authenticate DNS-over-TLS and DNS-over-HTTPS servers provided by a
+      local network using the technique proposed in <xref
       target="I-D.reddy-dprive-bootstrap-dns-server"></xref>. By creating a
       machine-parsable DNS server privacy policy, the DNS client can
       automatically allow using a DNS server on the local network that
@@ -108,7 +108,7 @@
 
       <t>This document defines a method for creating and validating a token
       that cryptographically verifies the privacy policy information of a DNS
-      server, such as a DNS-over-(D)TLS or DNS-over-HTTPS server.</t>
+      server, such as a DNS-over-TLS or DNS-over-HTTPS server.</t>
 
       <t>The cryptographically signed privacy statement allows a DNS client to
       connect to multiple DNS servers and select the DNS server that adheres
@@ -120,13 +120,12 @@
       meets the privacy preserving data policy requirements of the client. If
       both servers meet the privacy preserving data policy requirements of the
       client, it can select to use the local DNS server. In addition, the
-      cryptographically signed privacy statement allows a DNS-over-(D)TLS or
+      cryptographically signed privacy statement allows a DNS-over-TLS or
       DNS-over-HTTPS client to securely determine whether the local DNS server
       performs DNS-based content filtering, and if the local server meets the
       privacy preserving data policy requirements of the client, the client
-      can continue to use the local DNS-over-(D)TLS server to resolve DNS
-      queries and does not have to switch to the pre-configured public
-      resolver. </t>
+      can continue to use the local DNS-over-TLS server to resolve DNS queries
+      and does not have to switch to the pre-configured public resolver. </t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -152,7 +151,7 @@
       of encapsulating claimed or asserted information with an associated
       digital signature using X.509 based certificates. JWT provides a set of
       claims in JSON format that can conveniently accommodate asserted privacy
-      policy information of the DNS-over-(D)TLS or DNS-over-HTTPS server.
+      policy information of the DNS-over-TLS or DNS-over-HTTPS server.
       Additionally, JWS provides a path for updating methods and cryptographic
       algorithms used for the associated digital signatures.</t>
 
@@ -166,8 +165,8 @@
 
       <t>The privacy assertion token (PAT) specifically uses this token format
       and defines claims that convey the privacy policy information of
-      DNS-over-(D)TLS or DNS-over-HTTPS server. The signer of a PAT object may
-      or may not correspond to the DNS server's domain. The PAT object can be
+      DNS-over-TLS or DNS-over-HTTPS server. The signer of a PAT object may or
+      may not correspond to the DNS server's domain. The PAT object can be
       validated by the DNS client, and if the DNS server meets the privacy
       preserving data policy requirements of the client and/or end user, it
       can switch to the privacy-enabling DNS server discovered in the located
@@ -179,8 +178,8 @@
       target="I-D.ietf-dnsop-resolver-information"></xref>.</t>
 
       <t>For example, the PAT object could be created by the domain hosting
-      the DNS-over-(D)TLS or DNS-over-HTTPS server, or by a third party who
-      performed privacy and security audit of the DNS-over-(D)TLS or
+      the DNS-over-TLS or DNS-over-HTTPS server, or by a third party who
+      performed privacy and security audit of the DNS-over-TLS or
       DNS-over-HTTPS server. The DNS client needs to have the capability to
       verify the PAT token and the digital signature. The PAT associated
       certificate is used to validate the authority of the originating signer,
@@ -268,12 +267,11 @@
       target="RFC7515"></xref> Section 3.</t>
 
       <t>PAT defines the use of a standard JWT defined claim as well as custom
-      claims corresponding to the DNS-over-(D)TLS or DNS-over-HTTPS
-      servers.</t>
+      claims corresponding to the DNS-over-TLS or DNS-over-HTTPS servers.</t>
 
       <t>Any claim names MUST use the US-ASCII character set. Any claim values
-      can container characters that are outside the US-ASCII range, however
-      MUST follow the default JSON serialization defined in <xref
+      can contain characters that are outside the US-ASCII range, however MUST
+      follow the default JSON serialization defined in <xref
       target="RFC7519"></xref> Section 7.</t>
 
       <section anchor="jwt-defined-claims" title="JWT defined claims">
@@ -364,10 +362,28 @@
                 (0) indicates no logging. Logging duration is represented in
                 hours. This is a mandatory attribute.</t>
 
-                <t hangText="blockdomains:">If access to domains (e.g.,
-                malicious domains) is blocked or not. If access to domains is
-                blocked, the parameter value is set to 'true'. This is an
-                optional attribute. </t>
+                <t hangText="filtering:">If the DNS server changes some of the
+                answers that it returns based on policy criteria, such as to
+                prevent access to malware sites or objectionable content. This
+                optional attribute has the following structure: <list
+                    style="hanging">
+                    <t hangText="malwareblocking:">The DNS server offers
+                    malware blocking service. If access to domains is blocked
+                    on threat data, the parameter value is set to 'true'. </t>
+
+                    <t hangText="policyblocking:">If access to domains is
+                    blocked on a blacklist or objectionable content, the
+                    parameter value is set to 'true'. </t>
+
+                    <t hangText="modifyresponse:">If the DNS server changes
+                    some of the answers that it returns, the parameter value
+                    is set to 'true'. </t>
+
+                    <t hangText="noresponse:">If access to domains is blocked
+                    and the server simply fails to answer (it does not create
+                    modified results), the parameter value is set to
+                    'true'.</t>
+                  </list></t>
 
                 <t hangText="notifyuser:">If the transaction data is logged to
                 notify the user access to certain domains is blocked, the
@@ -424,6 +440,13 @@
                 <t hangText="auditurl:">A URL that points to the security
                 assessment report of the DNS server by a third party auditor.
                 This is an optional attribute.</t>
+
+                <t hangText="upstreamserverpat:">The PAT object of the
+                upstream DNS server. For example, the DNS forwarder relying on
+                the upstream resolver (e.g., at an ISP) to perform recursive
+                DNS lookups. The client needs to discover the privacy policy
+                information of both the forwarder and recursive resolver. This
+                is an optional attribute.</t>
               </list></t>
           </section>
 
@@ -470,12 +493,12 @@
       security audit of the DNS server. The privacy policy information will be
       attested using "Organization Validation" (OV) or "Extended Validation"
       (EV) certificates to avoid bad actors taking advantage of this mechanism
-      to advertise DNS-over-(D)TLS and DNS-over-HTTPS servers for illegitimate
+      to advertise DNS-over-TLS and DNS-over-HTTPS servers for illegitimate
       and fraudulent purposes meant to trick DNS clients into believing that
-      they are using a legitimate DNS-over-(D)TLS or DNS-over-HTTPS server
-      hosted to provide privacy for DNS transactions. Alternatively, the DNS
-      client will have to be configured to trust the leaf of the signer of the
-      PAT object. That is, trust of the signer MUST NOT be determined by
+      they are using a legitimate DNS-over-TLS or DNS-over-HTTPS server hosted
+      to provide privacy for DNS transactions. Alternatively, the DNS client
+      will have to be configured to trust the leaf of the signer of the PAT
+      object. That is, trust of the signer MUST NOT be determined by
       validating the signer via the OS or browser trust chain because that
       would allow any arbitrary entity to operate a DNS server and assert any
       sort of privacy policy.</t>
@@ -594,9 +617,9 @@
       signature and the associated certificate requires consideration of the
       authentication and authority or reputation of the signer to attest the
       privacy policy information of the DNS server being asserted. Bad actors
-      can host DNS-over-(D)TLS and DNS-over-HTTPS servers, and claim the
-      servers offer privacy but exactly do the opposite to invade the privacy
-      of the user. Bad actor can get a domain name, host DNS-over-(D)TLS and
+      can host DNS-over-TLS and DNS-over-HTTPS servers, and claim the servers
+      offer privacy but exactly do the opposite to invade the privacy of the
+      user. Bad actor can get a domain name, host DNS-over-TLS and
       DNS-over-HTTPS servers, and get the DNS server certificate signed by a
       CA. The privacy policy information will have to be attested using OV/EV
       certificates or a PAT object signer trusted by the DNS client to prevent
