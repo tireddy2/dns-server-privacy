@@ -99,7 +99,7 @@ Table of Contents
        10.1.1.  Media Type Registry Contents Additions Requested . .  13
      10.2.  JSON Web Token Claims Registration . . . . . . . . . . .  14
        10.2.1.  Registry Contents Additions Requested  . . . . . . .  14
-     10.3.  DNS Resolver Information Registration  . . . . . . . . .  15
+     10.3.  DNS Resolver Information Registration  . . . . . . . . .  14
    11. Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .  15
    12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  15
      12.1.  Normative References . . . . . . . . . . . . . . . . . .  15
@@ -429,18 +429,18 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
       policyblocking:  If access to domains is blocked on a blacklist or
          objectionable content, the parameter value is set to 'true'.
 
-      modifyresponse:  If the DNS server changes some of the answers
-         that it returns, the parameter value is set to 'true'.
-
-      noresponse:  If access to domains is blocked and the server simply
-         fails to answer (it does not create modified results), the
-         parameter value is set to 'true'.
-
    notifyuser:  If the transaction data is logged to notify the user
       access to certain domains is blocked, the period for which the
       transaction data is stored.  A value of negative one (-1)
       indicates indefinite duration of logging transaction data to
       notify the user.  A value of zero (0) indicates no logging.
+      Logging duration is represented in hours.  This is an optional
+      attribute.
+
+   analytics:  If the transaction data is logged for analytics (e.g., To
+      detect malicious domains), the period for which the transaction
+      data is stored.  A value of negative one (-1) indicates indefinite
+      duration of logging transaction data for analytics.  A value of
 
 
 
@@ -450,13 +450,6 @@ Reddy, et al.            Expires March 13, 2020                 [Page 8]
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
 
-      Logging duration is represented in hours.  This is an optional
-      attribute.
-
-   analytics:  If the transaction data is logged for analytics (e.g., To
-      detect malicious domains), the period for which the transaction
-      data is stored.  A value of negative one (-1) indicates indefinite
-      duration of logging transaction data for analytics.  A value of
       zero (0) indicates no logging.  Logging duration is represented in
       hours.  This is an optional attribute.
 
@@ -498,6 +491,13 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
    upstreamserverpat:  The PAT object of the upstream DNS server.  For
       example, the DNS forwarder relying on the upstream resolver (e.g.,
       at an ISP) to perform recursive DNS lookups.  The client needs to
+      discover the privacy policy information of both the forwarder and
+      recursive resolver.  This is an optional attribute.
+
+
+
+
+
 
 
 
@@ -505,9 +505,6 @@ Reddy, et al.            Expires March 13, 2020                 [Page 9]
 
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
-
-      discover the privacy policy information of both the forwarder and
-      recursive resolver.  This is an optional attribute.
 
 5.2.1.4.  Example
 
@@ -555,15 +552,15 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
    trust chain because that would allow any arbitrary entity to operate
    a DNS server and assert any sort of privacy policy.
 
+   Appendix A of this document has a detailed example of how to follow
+   the steps to create the JWS Signature.
+
 
 
 Reddy, et al.            Expires March 13, 2020                [Page 10]
 
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
-
-   Appendix A of this document has a detailed example of how to follow
-   the steps to create the JWS Signature.
 
    JWS [RFC7515] Section 5.1 Step 7 JWS JSON serialization is supported
    for PAT to enable multiple signatures to be applied to the PAT
@@ -609,6 +606,9 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
 
    3.  JSON value literals MUST be lowercase.
 
+   4.  JSON numbers are to be encoded as integers unless the field is
+       defined to be encoded otherwise.
+
 
 
 
@@ -617,9 +617,6 @@ Reddy, et al.            Expires March 13, 2020                [Page 11]
 
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
-
-   4.  JSON numbers are to be encoded as integers unless the field is
-       defined to be encoded otherwise.
 
    5.  Encoding rules MUST be applied recursively to member values and
        array values.
@@ -666,6 +663,9 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
    The use of PAT object based on the validation of the digital
    signature and the associated certificate requires consideration of
    the authentication and authority or reputation of the signer to
+   attest the privacy policy information of the DNS server being
+   asserted.  Bad actors can host DNS-over-TLS and DNS-over-HTTPS
+   servers, and claim the servers offer privacy but exactly do the
 
 
 
@@ -674,9 +674,6 @@ Reddy, et al.            Expires March 13, 2020                [Page 12]
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
 
-   attest the privacy policy information of the DNS server being
-   asserted.  Bad actors can host DNS-over-TLS and DNS-over-HTTPS
-   servers, and claim the servers offer privacy but exactly do the
    opposite to invade the privacy of the user.  Bad actor can get a
    domain name, host DNS-over-TLS and DNS-over-HTTPS servers, and get
    the DNS server certificate signed by a CA.  The privacy policy
@@ -723,14 +720,15 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
 
    o  Interoperability considerations: n/a
 
+   o  Published specification: [RFCThis]
+
+
 
 
 Reddy, et al.            Expires March 13, 2020                [Page 13]
 
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
-
-   o  Published specification: [RFCThis]
 
    o  Applications that use this media type: DNS
 
@@ -774,9 +772,11 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
 
    o  Specification Document(s): Section 5.2.1.3 of [TODO this document]
 
+10.3.  DNS Resolver Information Registration
 
-
-
+   IANA will add the names ipaddresspii, logging, useridentity,
+   filtering, notifyuser, analytics, sharedata, transferdata,
+   qnameminimization, privacyurl, auditurl and upstreamserverpat to the
 
 
 
@@ -786,12 +786,8 @@ Reddy, et al.            Expires March 13, 2020                [Page 14]
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
 
-10.3.  DNS Resolver Information Registration
-
-   IANA will add the names ipaddresspii, logging, useridentity,
-   notifyuser, analytics, sharedata, transferdata, qnameminimization,
-   privacyurl and auditurl to the DNS Resolver Information registry
-   defined in Section 5.2 of [I-D.ietf-dnsop-resolver-information].
+   DNS Resolver Information registry defined in Section 5.2 of
+   [I-D.ietf-dnsop-resolver-information].
 
 11.  Acknowledgments
 
@@ -833,6 +829,10 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
               (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
               <https://www.rfc-editor.org/info/rfc5280>.
 
+   [RFC6347]  Rescorla, E. and N. Modadugu, "Datagram Transport Layer
+              Security Version 1.2", RFC 6347, DOI 10.17487/RFC6347,
+              January 2012, <https://www.rfc-editor.org/info/rfc6347>.
+
 
 
 
@@ -841,10 +841,6 @@ Reddy, et al.            Expires March 13, 2020                [Page 15]
 
 Internet-Draft     Asserted DNS server privacy policy     September 2019
 
-
-   [RFC6347]  Rescorla, E. and N. Modadugu, "Datagram Transport Layer
-              Security Version 1.2", RFC 6347, DOI 10.17487/RFC6347,
-              January 2012, <https://www.rfc-editor.org/info/rfc6347>.
 
    [RFC6838]  Freed, N., Klensin, J., and T. Hansen, "Media Type
               Specifications and Registration Procedures", BCP 13,
@@ -890,6 +886,10 @@ Internet-Draft     Asserted DNS server privacy policy     September 2019
 
    [UNICODE]  The Unicode Consortium, "The Unicode Standard", June 2016,
               <http://www.unicode.org/versions/latest/>.
+
+
+
+
 
 
 

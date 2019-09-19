@@ -125,7 +125,7 @@
       performs DNS-based content filtering, and if the local server meets the
       privacy preserving data policy requirements of the client, the client
       can continue to use the local DNS-over-TLS server to resolve DNS queries
-      and does not have to switch to the pre-configured public resolver. </t>
+      and does not have to switch to the pre-configured public resolver.</t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -369,20 +369,11 @@
                     style="hanging">
                     <t hangText="malwareblocking:">The DNS server offers
                     malware blocking service. If access to domains is blocked
-                    on threat data, the parameter value is set to 'true'. </t>
+                    on threat data, the parameter value is set to 'true'.</t>
 
                     <t hangText="policyblocking:">If access to domains is
                     blocked on a blacklist or objectionable content, the
-                    parameter value is set to 'true'. </t>
-
-                    <t hangText="modifyresponse:">If the DNS server changes
-                    some of the answers that it returns, the parameter value
-                    is set to 'true'. </t>
-
-                    <t hangText="noresponse:">If access to domains is blocked
-                    and the server simply fails to answer (it does not create
-                    modified results), the parameter value is set to
-                    'true'.</t>
+                    parameter value is set to 'true'.</t>
                   </list></t>
 
                 <t hangText="notifyuser:">If the transaction data is logged to
@@ -725,9 +716,9 @@
       <section anchor="resolver-information"
                title="DNS Resolver Information Registration">
         <t>IANA will add the names ipaddresspii, logging, useridentity,
-        notifyuser, analytics, sharedata, transferdata, qnameminimization,
-        privacyurl and auditurl to the DNS Resolver Information registry
-        defined in Section 5.2 of <xref
+        filtering, notifyuser, analytics, sharedata, transferdata,
+        qnameminimization, privacyurl, auditurl and upstreamserverpat to the
+        DNS Resolver Information registry defined in Section 5.2 of <xref
         target="I-D.ietf-dnsop-resolver-information"></xref>.</t>
       </section>
     </section>
