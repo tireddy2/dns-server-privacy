@@ -327,126 +327,136 @@
             https URI scheme (Section 3 of <xref
             target="RFC8484"></xref>).</t>
           </section>
+        </section>
 
-          <section anchor="privinfo"
-                   title="&quot;privinfo&quot; (Privacy Information) Claim">
-            <t>The &ldquo;privinfo&rdquo; claim MUST be formatted as a JSON
-            object. The &ldquo;privinfo&rdquo; claim contains the privacy
-            policy information of the DNS server, it includes the following
-            attributes:</t>
+        <section anchor="privinfo"
+                 title="&quot;privinfo&quot; (Privacy Information) Claim">
+          <t>The &ldquo;privinfo&rdquo; claim MUST be formatted as a JSON
+          object. The &ldquo;privinfo&rdquo; claim contains the privacy policy
+          information of the DNS server, it includes the following
+          attributes:</t>
 
-            <t><list style="hanging">
-                <t hangText="ipaddresspii:">If the client IP address is
-                Personally Identifiable Information (PII) data or non
-                PII-data. If client IP address is PII, the parameter value is
-                set to 'true'. This is a mandatory attribute.</t>
+          <t><list style="hanging">
+              <t hangText="ipaddresspii:">If the client IP address is
+              Personally Identifiable Information (PII) data or non PII-data.
+              If client IP address is PII, the parameter value is set to
+              'true'. This is a mandatory attribute.</t>
 
-                <t hangText="logging:">If the transaction data (e.g., DNS
-                messages) is logged and the duration that data is stored. A
-                value of negative one (-1) indicates indefinite duration of
-                logging transaction data. A value of zero (0) indicates no
-                logging. Logging duration is represented in hours. If anyone
-                of the attributes 'useridentity', 'notifyuser' and 'analytics'
-                are not set to the value zero, 'logging' attribute MUST NOT be
-                set to the value zero. This is a mandatory attribute.</t>
+              <t hangText="logging:">If the transaction data (e.g., DNS
+              messages) is logged and the duration that data is stored. A
+              value of negative one (-1) indicates indefinite duration of
+              logging transaction data. A value of zero (0) indicates no
+              logging. Logging duration is represented in hours. If anyone of
+              the attributes 'useridentity', 'notifyuser' and 'analytics' are
+              not set to the value zero, 'logging' attribute MUST NOT be set
+              to the value zero. This is a mandatory attribute.</t>
 
-                <t hangText="useridentity:">If the user identity that sent the
-                DNS query is logged and the duration that data is retained.
-                User identity such as username, IP address, MAC address, user
-                DNS query patterns or any other personally identifiable data.
-                The server should also discard or minimize correlation data
-                (Section 5.2.4 of <xref
-                target="I-D.ietf-dprive-bcp-op"></xref>) that can be used to
-                identify the end user. A value of negative one (-1) indicates
-                indefinite duration of logging user identity. A value of zero
-                (0) indicates no logging. Logging duration is represented in
-                hours. This is a mandatory attribute.</t>
+              <t hangText="useridentity:">If the user identity that sent the
+              DNS query is logged and the duration that data is retained. User
+              identity such as username, IP address, MAC address, user DNS
+              query patterns or any other personally identifiable data. The
+              server should also discard or minimize correlation data (Section
+              5.2.4 of <xref target="I-D.ietf-dprive-bcp-op"></xref>) that can
+              be used to identify the end user. A value of negative one (-1)
+              indicates indefinite duration of logging user identity. A value
+              of zero (0) indicates no logging. Logging duration is
+              represented in hours. This is a mandatory attribute.</t>
 
-                <t hangText="filtering:">If the DNS server changes some of the
-                answers that it returns based on policy criteria, such as to
-                prevent access to malware sites or objectionable content. This
-                optional attribute has the following structure: <list
-                    style="hanging">
-                    <t hangText="malwareblocking:">The DNS server offers
-                    malware blocking service. If access to domains is blocked
-                    on threat data, the parameter value is set to 'true'.</t>
+              <t hangText="filtering:">If the DNS server changes some of the
+              answers that it returns based on policy criteria, such as to
+              prevent access to malware sites or objectionable content. This
+              optional attribute has the following structure: <list
+                  style="hanging">
+                  <t hangText="malwareblocking:">The DNS server offers malware
+                  blocking service. If access to domains is blocked on threat
+                  data, the parameter value is set to 'true'.</t>
 
-                    <t hangText="policyblocking:">If access to domains is
-                    blocked on a blacklist or objectionable content, the
-                    parameter value is set to 'true'.</t>
-                  </list></t>
+                  <t hangText="policyblocking:">If access to domains is
+                  blocked on a blacklist or objectionable content, the
+                  parameter value is set to 'true'.</t>
+                </list></t>
 
-                <t hangText="notifyuser:">If the transaction data is logged to
-                notify the user access to certain domains is blocked, the
-                period for which the transaction data is stored. A value of
-                negative one (-1) indicates indefinite duration of logging
-                transaction data to notify the user. A value of zero (0)
-                indicates no logging. Logging duration is represented in
-                hours. This is an optional attribute.</t>
+              <t hangText="notifyuser:">If the transaction data is logged to
+              notify the user access to certain domains is blocked, the period
+              for which the transaction data is stored. A value of negative
+              one (-1) indicates indefinite duration of logging transaction
+              data to notify the user. A value of zero (0) indicates no
+              logging. Logging duration is represented in hours. This is an
+              optional attribute.</t>
 
-                <t hangText="analytics:">If the transaction data is logged for
-                analytics (e.g., To detect malicious domains), the period for
-                which the transaction data is stored. A value of negative one
-                (-1) indicates indefinite duration of logging transaction data
-                for analytics. A value of zero (0) indicates no logging.
-                Logging duration is represented in hours. This is an optional
-                attribute.</t>
+              <t hangText="analytics:">If the transaction data is logged for
+              analytics (e.g., To detect malicious domains), the period for
+              which the transaction data is stored. A value of negative one
+              (-1) indicates indefinite duration of logging transaction data
+              for analytics. A value of zero (0) indicates no logging. Logging
+              duration is represented in hours. This is an optional
+              attribute.</t>
 
-                <t hangText="sharedata:">If the transaction data is shared
-                with partners or not, and if the transaction data is shared
-                with partners, the names of the partners. If anonymized data
-                or client identifiable data is shared with partners. The term
-                "anonymization" is defined in Section 5.2.2 of <xref
-                target="I-D.ietf-dprive-bcp-op"></xref>. This mandatory
-                attribute has the following structure: <list style="hanging">
-                    <t hangText="sharepartners:">If the parameter value is set
-                    to 'true', transaction data is shared with partners.</t>
+              <t hangText="sharedata:">If the transaction data is shared with
+              partners or not, and if the transaction data is shared with
+              partners, the names of the partners. If anonymized data or
+              client identifiable data is shared with partners. The term
+              "anonymization" is defined in Section 5.2.2 of <xref
+              target="I-D.ietf-dprive-bcp-op"></xref>. This mandatory
+              attribute has the following structure: <list style="hanging">
+                  <t hangText="sharepartners:">If the parameter value is set
+                  to 'true', transaction data is shared with partners.</t>
 
-                    <t hangText="partners:">List of partner names. If
-                    'sharepartners' value is set to false, 'partners' MUST NOT
-                    be present in the 'sharedata' structure.</t>
+                  <t hangText="partners:">List of partner names. If
+                  'sharepartners' value is set to false, 'partners' MUST NOT
+                  be present in the 'sharedata' structure.</t>
 
-                    <t hangText="anonymizeddata:">If the parameter value is
-                    set to 'true', anonymized transaction data is shared with
-                    partners. If 'sharepartners' value is set to false,
-                    'anonymizeddata' MUST NOT be present in the 'sharedata'
-                    structure.</t>
-                  </list></t>
+                  <t hangText="anonymizeddata:">If the parameter value is set
+                  to 'true', anonymized transaction data is shared with
+                  partners. If 'sharepartners' value is set to false,
+                  'anonymizeddata' MUST NOT be present in the 'sharedata'
+                  structure.</t>
+                </list></t>
 
-                <t hangText="transferdata:">If the transaction data is shared
-                or sold to third parties. If the parameter value is set to
-                'true', means share or sell data to third parties. This is a
-                mandatory attribute.</t>
+              <t hangText="transferdata:">If the transaction data is shared or
+              sold to third parties. If the parameter value is set to 'true',
+              means share or sell data to third parties. This is a mandatory
+              attribute.</t>
 
-                <t hangText="qnameminimization:">If the DNS server implements
-                QNAME minimisation <xref target="RFC7816"></xref> to improve
-                DNS privacy. If the parameter value is set to 'true', QNAME
-                minimisation is supported by the DNS server. This is a
-                mandatory attribute.</t>
+              <t hangText="qnameminimization:">If the DNS server implements
+              QNAME minimisation <xref target="RFC7816"></xref> to improve DNS
+              privacy. If the parameter value is set to 'true', QNAME
+              minimisation is supported by the DNS server. This is a mandatory
+              attribute.</t>
 
-                <t hangText="privacyurl:">A URL that points to the privacy
-                policy information of the DNS server. This is a mandatory
-                attribute.</t>
+              <t hangText="privacyurl:">A URL that points to the privacy
+              policy information of the DNS server. This is a mandatory
+              attribute.</t>
 
-                <t hangText="auditurl:">A URL that points to the security
-                assessment report of the DNS server by a third party auditor.
-                This is an optional attribute.</t>
+              <t hangText="auditurl:">A URL that points to the security
+              assessment report of the DNS server by a third party auditor.
+              This is an optional attribute.</t>
 
-                <t hangText="upstreamserverpat:">The PAT object of the
-                upstream DNS server. For example, the DNS forwarder relying on
-                the upstream resolver (e.g., at an ISP) to perform recursive
-                DNS lookups. The client needs to discover the privacy policy
-                information of both the forwarder and recursive resolver. This
-                is an optional attribute.</t>
-              </list></t>
-          </section>
+              <t hangText="upstreamserverpat:">The PAT object of the upstream
+              DNS server. For example, the DNS forwarder relying on the
+              upstream resolver (e.g., at an ISP) to perform recursive DNS
+              lookups. The client needs to discover the privacy policy
+              information of both the forwarder and recursive resolver. If a
+              local DNS server is configured as a Forwarding DNS server <xref
+              target="RFC8499"></xref>, its PAT MUST include the PAT object of
+              the upstream resolver it is using. If the upstream DNS resolver
+              does not communicate its privacy policy, the attribute value
+              must be set to empty string. The client can combine the local
+              and upstream resolver's privacy policies, always combining for
+              the worse privacy values. For example, if the local server does
+              not log queries but the upstream resolver does log queries, the
+              combined PAT policy would indicate queries are logged and the
+              client can evaluate if its privacy preserving data policy
+              requirements are met. This is an optional attribute.</t>
+            </list></t>
+        </section>
 
-          <section anchor="pat_payload_example" title="Example">
-            <t>The below Figure shows an example of privacy policy
-            information.</t>
+        <section anchor="pat_payload_example" title="Example">
+          <t>The below Figure shows an example of privacy policy information.
+          </t>
 
-            <figure>
-              <artwork><![CDATA[{
+          <figure>
+            <artwork><![CDATA[{
   "server":{
       "adn":["example.com"]
   },
@@ -464,8 +474,7 @@
   } 
 }
 ]]></artwork>
-            </figure>
-          </section>
+          </figure>
         </section>
       </section>
     </section>
