@@ -294,7 +294,9 @@
           reasonable duration. A short expiration time for the PAT object
           periodically reaffirms the privacy policy information of the DNS
           server to the client and ensures the client does not use outdated
-          privacy policy information.</t>
+          privacy policy information. If the client knows the PAT object has
+          expired, it makes another request to get the new PAT object from the
+          DNS server.</t>
         </section>
       </section>
 
@@ -346,21 +348,22 @@
               messages) is logged and the duration that data is stored. A
               value of negative one (-1) indicates indefinite duration of
               logging transaction data. A value of zero (0) indicates no
-              logging. Logging duration is represented in hours. If anyone of
-              the attributes 'useridentity', 'notifyuser' and 'analytics' are
-              not set to the value zero, 'logging' attribute MUST NOT be set
-              to the value zero. This is a mandatory attribute.</t>
+              logging. Logging duration is represented in hours. If any of the
+              attributes 'useridentity', 'notifyuser' and 'analytics' are not
+              set to the value zero, 'logging' attribute MUST NOT be set to
+              the value zero. This is a mandatory attribute.</t>
 
               <t hangText="useridentity:">If the user identity that sent the
               DNS query is logged and the duration that data is retained. User
-              identity such as username, IP address, MAC address, user DNS
-              query patterns or any other personally identifiable data. The
-              server should also discard or minimize correlation data (Section
-              5.2.4 of <xref target="I-D.ietf-dprive-bcp-op"></xref>) that can
-              be used to identify the end user. A value of negative one (-1)
-              indicates indefinite duration of logging user identity. A value
-              of zero (0) indicates no logging. Logging duration is
-              represented in hours. This is a mandatory attribute.</t>
+              identity includes things such as username, IP address, MAC
+              address, user DNS query patterns or any other personally
+              identifiable data. The server should also discard or minimize
+              correlation data (Section 5.2.4 of <xref
+              target="I-D.ietf-dprive-bcp-op"></xref>) that can be used to
+              identify the end user. A value of negative one (-1) indicates
+              indefinite duration of logging user identity. A value of zero
+              (0) indicates no logging. Logging duration is represented in
+              hours. This is a mandatory attribute.</t>
 
               <t hangText="filtering:">If the DNS server changes some of the
               answers that it returns based on policy criteria, such as to
@@ -399,16 +402,16 @@
               "anonymization" is defined in Section 5.2.2 of <xref
               target="I-D.ietf-dprive-bcp-op"></xref>. This mandatory
               attribute has the following structure: <list style="hanging">
-                  <t hangText="sharepartners:">If the parameter value is set
-                  to 'true', transaction data is shared with partners.</t>
+                  <t hangText="sharepartners:">If transaction data is shared
+                  with partners, the parameter value is set to 'true'.</t>
 
                   <t hangText="partners:">List of partner names. If
                   'sharepartners' value is set to false, 'partners' MUST NOT
                   be present in the 'sharedata' structure.</t>
 
-                  <t hangText="anonymizeddata:">If the parameter value is set
-                  to 'true', anonymized transaction data is shared with
-                  partners. If 'sharepartners' value is set to false,
+                  <t hangText="anonymizeddata:">If anonymized transaction data
+                  is shared with partners, the parameter value is set to
+                  'true'. If 'sharepartners' value is set to false,
                   'anonymizeddata' MUST NOT be present in the 'sharedata'
                   structure.</t>
                 </list></t>
@@ -432,28 +435,48 @@
               assessment report of the DNS server by a third party auditor.
               This is an optional attribute.</t>
 
-              <t hangText="upstreamserverpat:">The PAT object of the upstream
-              DNS server. For example, the DNS forwarder relying on the
-              upstream resolver (e.g., at an ISP) to perform recursive DNS
-              lookups. The client needs to discover the privacy policy
-              information of both the forwarder and recursive resolver. If a
-              local DNS server is configured as a Forwarding DNS server <xref
-              target="RFC8499"></xref>, its PAT MUST include the PAT object of
-              the upstream resolver it is using. If the upstream DNS resolver
-              does not communicate its privacy policy, the attribute value
-              must be set to empty string. The client can combine the local
-              and upstream resolver's privacy policies, always combining for
-              the worse privacy values. For example, if the local server does
-              not log queries but the upstream resolver does log queries, the
-              combined PAT policy would indicate queries are logged and the
-              client can evaluate if its privacy preserving data policy
-              requirements are met. This is an optional attribute.</t>
+              <t hangText="upstreamservers:">The local DNS server can be
+              configured as a Forwarding DNS server <xref target="RFC8499">
+              </xref> relying on the upstream resolver (e.g., at an ISP) to
+              perform recursive DNS lookups. The client needs to discover the
+              privacy policy information of both the forwarder and recursive
+              resolvers. This optional attribute has the following structure:
+              <list style="hanging">
+                  <t hangText="securechannel:">If DNS-over-TLS or
+                  DNS-over-HTTPS is used to encrypt the DNS messages exchanged
+                  between the local DNS server and recursive resolver, the
+                  parameter value is set to 'true'. </t>
+
+                  <t hangText="upstreamserverspat:">The PAT object of the
+                  upstream DNS server. If a local DNS server is configured as
+                  a Forwarding DNS server, its PAT MUST include the PAT object
+                  of the upstream resolver it is using. If the upstream DNS
+                  resolver does not communicate its privacy policy, the
+                  attribute value must be set to empty string. The client can
+                  combine the local and upstream resolver's privacy policies,
+                  always combining for the worse privacy values. For example,
+                  if the local server does not log queries but the upstream
+                  resolver does log queries, the combined PAT policy would
+                  indicate queries are logged and the client can evaluate if
+                  its privacy preserving data policy requirements are met. The
+                  Forwarding DNS server is typically configured with both
+                  primary and secondary resolvers as a backup mechanism to
+                  handle primary server failure. If the local DNS server is
+                  configured to use primary and secondary resolvers,
+                  'upstreamserverspat' MUST include two entries in the array.
+                  If the local DNS server is acting as a forwarder, it
+                  RECOMMENDED that the DNS client requests the privacy policy
+                  information of the server every time the connection is
+                  re-established with the server. It allows the client to
+                  detect change in the local DNS server configuration to use
+                  an alternate resolver.</t>
+                </list></t>
             </list></t>
         </section>
 
         <section anchor="pat_payload_example" title="Example">
-          <t>The below Figure shows an example of privacy policy information.
-          </t>
+          <t>The below Figure shows an example of privacy policy
+          information.</t>
 
           <figure>
             <artwork><![CDATA[{
