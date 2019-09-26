@@ -445,7 +445,7 @@
                   <t hangText="securechannel:">If DNS-over-TLS or
                   DNS-over-HTTPS is used to encrypt the DNS messages exchanged
                   between the local DNS server and recursive resolver, the
-                  parameter value is set to 'true'. </t>
+                  parameter value is set to 'true'.</t>
 
                   <t hangText="upstreamserverspat:">The PAT object of the
                   upstream DNS server. If a local DNS server is configured as
@@ -635,6 +635,23 @@
       </section>
     </section>
 
+    <section anchor="privacy" title="Privacy Considerations">
+      <t>Users are expected to indicate to their system in some way that they
+      trust certain PAT signers (e.g., if working for Example, Inc., the
+      user's system is configured to trust example.com signing the PAT).
+      Separately, the user is expected to indicate to their system their PAT
+      privacy requirements (e.g., logging, etc.). By doing so, the DNS client
+      can automatically discover local DNS-over-TLS or DNS-over-HTTPS server,
+      validate the PAT signature and check if the PAT complies with user's
+      privacy needs, prior to using that DNS-over-TLS or DNS-over-HTTPS server
+      for DNS queries. The client MAY also retrieve the human-readable privacy
+      statement from the 'privacyurl' attribute to assist with that decision
+      (e.g., display the privacy statement when it changes, show differences
+      in previously-retrieved version, etc.). With the steps above, user
+      consent is obtained prior to using a locally-discovered DNS-over-TLS or
+      DNS-over-HTTPS server for DNS queries.</t>
+    </section>
+
     <section anchor="Security" title="Security Considerations">
       <t>The use of PAT object based on the validation of the digital
       signature and the associated certificate requires consideration of the
@@ -757,7 +774,8 @@
 
     <section anchor="acknowledgments" title="Acknowledgments">
       <t>This specification leverages some of the work that has been done in
-      <xref target="RFC8225"></xref>.</t>
+      <xref target="RFC8225"></xref>. Thanks to Ted Lemon and Shashank Jain
+      for the discussion and comments.</t>
     </section>
   </middle>
 
