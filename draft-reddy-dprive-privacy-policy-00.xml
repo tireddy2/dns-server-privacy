@@ -649,7 +649,15 @@
       (e.g., display the privacy statement when it changes, show differences
       in previously-retrieved version, etc.). With the steps above, user
       consent is obtained prior to using a locally-discovered DNS-over-TLS or
-      DNS-over-HTTPS server for DNS queries.</t>
+      DNS-over-HTTPS server for DNS queries. </t>
+
+      <t>An average user may not be able to indicate the privacy preserving
+      data policy requirements to the system. For such users, the DNS client
+      should auto check if the PAT complies with typical users privacy needs.
+      For example, the client by default does not select the local
+      DNS-over-TLS or DNS-over-HTTPS server if it shares non-anonymized DNS
+      transaction data with partners or if it logs the DNS transaction data
+      for a very long duration.</t>
     </section>
 
     <section anchor="Security" title="Security Considerations">
