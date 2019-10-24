@@ -143,11 +143,12 @@
           organization for which a user works or a user works temporarily
           within another corporation) to learn the privacy policy information
           of the local DNS server, and user can choose to use the discovered
-          DNS-over-TLS or DNS-over-HTTPS server. If the local DNS server does
-          not meet the privacy requirements of the user, user can be warned
-          and if user has no choice but to use the network for Internet access
-          and internal-only DNS names, the user can restrict the network's use
-          for work-related purpose only or use VPN for privacy.</t>
+          DNS-over-TLS or DNS-over-HTTPS server. If that discovered
+          DNS-over-TLS or DNS-over-HTTPS server does not meet the privacy
+          requirements of the user, user can be warned and the client can take
+          appropriate action. For example, use the network only to access
+          internal-only DNS names or fallback to a privacy-enabling public DNS
+          server.</t>
 
           <t>The privacy policy information signals the presence of DNS-based
           content filtering in the attached network. If the network is well
@@ -157,20 +158,17 @@
           returned by the DNS server indicates access to the domain is blocked
           because of internal security policy <xref
           target="I-D.ietf-dnsop-extended-error"></xref>, the client can
-          identify access to the domain is censored by the network. However,
-          if the client uses clear text DNS, an attacker can spoof the
-          extended error response to mislead the user into believing access to
-          popular domains is censored, and the user may no longer want to join
-          the network or stop using the network's security services to block
-          access to malicious domains.</t>
+          securely identify access to the domain is censored by the network.
+          </t>
 
-          <t>The privacy policy also conveys a URL that points to the human
-          readable privacy policy formation of the DNS server for the user to
-          review and can make an informed decision whether the DNS server is
-          trustworthy to honor the privacy of the user. The client can
-          automatically learn updates to the privacy policy information of the
-          DNS server, and the user does not have to periodically visit the URL
-          to manually review the privacy statement of the DNS server. </t>
+          <t>The privacy policy conveys a URL that points to the human
+          readable privacy policy information of the DNS server for the user
+          to review and can make an informed decision whether the DNS server
+          is trustworthy to honor the privacy of the user. The client
+          automatically learns updates to the privacy policy of the DNS
+          server, and whenever the privacy policy of the DNS server changes,
+          the client can notify the user to re-visit the URL to re-review the
+          privacy policy information of the DNS server.</t>
         </list>If the device joins a public WiFi without any security
       credential verification, such networks are typically not known to the
       user, and the device cannot be securely bootstrapped with the

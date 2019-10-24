@@ -81,24 +81,24 @@ Table of Contents
    4.  Privacy assertion token (PAT) overview  . . . . . . . . . . .   5
    5.  PAT Header  . . . . . . . . . . . . . . . . . . . . . . . . .   6
      5.1.  "typ" (Type) Header Parameter . . . . . . . . . . . . . .   6
-     5.2.  "alg" (Algorithm) Header Parameter  . . . . . . . . . . .   7
+     5.2.  "alg" (Algorithm) Header Parameter  . . . . . . . . . . .   6
      5.3.  "x5u" (X.509 URL) Header Parameter  . . . . . . . . . . .   7
      5.4.  Example PAT header  . . . . . . . . . . . . . . . . . . .   7
-   6.  PAT Payload . . . . . . . . . . . . . . . . . . . . . . . . .   8
+   6.  PAT Payload . . . . . . . . . . . . . . . . . . . . . . . . .   7
      6.1.  JWT defined claims  . . . . . . . . . . . . . . . . . . .   8
        6.1.1.  "iat" - Issued At claim . . . . . . . . . . . . . . .   8
        6.1.2.  "exp" - Expiration Time claim . . . . . . . . . . . .   8
      6.2.  PAT specific claims . . . . . . . . . . . . . . . . . . .   8
        6.2.1.  DNS server Identity Claims  . . . . . . . . . . . . .   8
        6.2.2.  "privinfo" (Privacy Information) Claim  . . . . . . .   9
-       6.2.3.  Example . . . . . . . . . . . . . . . . . . . . . . .  12
+       6.2.3.  Example . . . . . . . . . . . . . . . . . . . . . . .  11
    7.  PAT Signature . . . . . . . . . . . . . . . . . . . . . . . .  12
    8.  Extending PAT . . . . . . . . . . . . . . . . . . . . . . . .  13
    9.  Deterministic JSON Serialization  . . . . . . . . . . . . . .  13
      9.1.  Example PAT deterministic JSON form . . . . . . . . . . .  14
    10. Privacy Considerations  . . . . . . . . . . . . . . . . . . .  14
    11. Security Considerations . . . . . . . . . . . . . . . . . . .  15
-   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  16
+   12. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  15
      12.1.  Media Type Registration  . . . . . . . . . . . . . . . .  16
        12.1.1.  Media Type Registry Contents Additions Requested . .  16
      12.2.  JSON Web Token Claims Registration . . . . . . . . . . .  17
@@ -119,12 +119,12 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    Appendix A.  Example ES256 based PAT JWS Serialization and
                 Signature  . . . . . . . . . . . . . . . . . . . . .  20
      A.1.  X.509 Private Key in PKCS#8 format for ES256 Example**  .  22
-     A.2.  X.509 Public Key for ES256 Example**  . . . . . . . . . .  23
+     A.2.  X.509 Public Key for ES256 Example**  . . . . . . . . . .  22
    Appendix B.  Complete JWS JSON Serialization Representation with
-                multiple Signatures  . . . . . . . . . . . . . . . .  23
+                multiple Signatures  . . . . . . . . . . . . . . . .  22
      B.1.  X.509 Private Key in PKCS#8 format for E384 Example** . .  24
      B.2.  X.509 Public Key for ES384 Example**  . . . . . . . . . .  24
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  25
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  24
 
 1.  Introduction
 
@@ -195,12 +195,12 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
       organization for which a user works or a user works temporarily
       within another corporation) to learn the privacy policy
       information of the local DNS server, and user can choose to use
-      the discovered DNS-over-TLS or DNS-over-HTTPS server.  If the
-      local DNS server does not meet the privacy requirements of the
-      user, user can be warned and if user has no choice but to use the
-      network for Internet access and internal-only DNS names, the user
-      can restrict the network's use for work-related purpose only or
-      use VPN for privacy.
+      the discovered DNS-over-TLS or DNS-over-HTTPS server.  If that
+      discovered DNS-over-TLS or DNS-over-HTTPS server does not meet the
+      privacy requirements of the user, user can be warned and the
+      client can take appropriate action.  For example, use the network
+      only to access internal-only DNS names or fallback to a privacy-
+      enabling public DNS server.
 
    o  The privacy policy information signals the presence of DNS-based
       content filtering in the attached network.  If the network is well
@@ -209,15 +209,15 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
       the local DNS-over-TLS or DNS-over-HTTPS server.  If the error
       code returned by the DNS server indicates access to the domain is
       blocked because of internal security policy
-      [I-D.ietf-dnsop-extended-error], the client can identify access to
-      the domain is censored by the network.  However, if the client
-      uses clear text DNS, an attacker can spoof the extended error
-      response to mislead the user into believing access to popular
-      domains is censored, and the user may no longer want to join the
-      network or stop using the network's security services to block
-      access to malicious domains.
+      [I-D.ietf-dnsop-extended-error], the client can securely identify
+      access to the domain is censored by the network.
 
-
+   o  The privacy policy conveys a URL that points to the human readable
+      privacy policy information of the DNS server for the user to
+      review and can make an informed decision whether the DNS server is
+      trustworthy to honor the privacy of the user.  The client
+      automatically learns updates to the privacy policy of the DNS
+      server, and whenever the privacy policy of the DNS server changes,
 
 
 
@@ -226,14 +226,8 @@ Reddy, et al.             Expires April 5, 2020                 [Page 4]
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
 
-   o  The privacy policy also conveys a URL that points to the human
-      readable privacy policy formation of the DNS server for the user
-      to review and can make an informed decision whether the DNS server
-      is trustworthy to honor the privacy of the user.  The client can
-      automatically learn updates to the privacy policy information of
-      the DNS server, and the user does not have to periodically visit
-      the URL to manually review the privacy statement of the DNS
-      server.
+      the client can notify the user to re-visit the URL to re-review
+      the privacy policy information of the DNS server.
 
    If the device joins a public WiFi without any security credential
    verification, such networks are typically not known to the user, and
@@ -274,6 +268,12 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    JWS defines the use of JSON data structures in a specified canonical
    format for signing data corresponding to JOSE header, JWS Payload,
+   and JWS Signature.  JWT defines a set of claims that are represented
+   by specified JSON objects which can be extended with custom keys for
+   specific applications.  The next sections define the header and
+   claims that MUST be minimally used with JWT and JWS for privacy
+   assertion token.
+
 
 
 
@@ -281,12 +281,6 @@ Reddy, et al.             Expires April 5, 2020                 [Page 5]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   and JWS Signature.  JWT defines a set of claims that are represented
-   by specified JSON objects which can be extended with custom keys for
-   specific applications.  The next sections define the header and
-   claims that MUST be minimally used with JWT and JWS for privacy
-   assertion token.
 
    The privacy assertion token (PAT) specifically uses this token format
    and defines claims that convey the privacy policy information of DNS-
@@ -327,17 +321,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    For PAT Token the "typ" header MUST be the string "pat".  This
    represents that the encoded token is a JWT of type pat.
 
-
-
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                 [Page 6]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
 5.2.  "alg" (Algorithm) Header Parameter
 
    The "alg" (Algorithm) Header Parameter is defined in JWS [RFC7515]
@@ -346,6 +329,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    It also refers to a list of defined "alg" values as part of a
    registry established by JSON Web Algorithms (JWA) [RFC7518]
    Section 3.1.
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                 [Page 6]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
    For the creation and verification of PAT tokens and their digital
    signatures, implementations MUST support ES256 as defined in JWA
@@ -383,17 +374,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
      "x5u":"https://cert.example.com/pat.cer"
    }
 
-
-
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                 [Page 7]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
 6.  PAT Payload
 
    The token claims consists of the privacy policy information of the
@@ -406,6 +386,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    Any claim names MUST use the US-ASCII character set.  Any claim
    values can contain characters that are outside the US-ASCII range,
+
+
+
+Reddy, et al.             Expires April 5, 2020                 [Page 7]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
+
    however MUST follow the default JSON serialization defined in
    [RFC7519] Section 7.
 
@@ -443,13 +431,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    identities can be represented as either authentication domain name
    (ADN) (defined in [RFC8310]) or Uniform Resource Indicators (URI).
 
-
-
-Reddy, et al.             Expires April 5, 2020                 [Page 8]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
 6.2.1.1.  "adn" - authentication domain name identity
 
    If the DNS server identity is a ADN, the claim name representing the
@@ -461,6 +442,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    If the DNS server identity is of the form URI, as defined in
    [RFC3986], the claim name representing the identity MUST be "uri" and
    the claim value is the URI form of the DNS server identity.  As a
+
+
+
+Reddy, et al.             Expires April 5, 2020                 [Page 8]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
+
    reminder, if DNS-over-HTTPS protocol is supported by the DNS server,
    the DNS client uses the https URI scheme (Section 3 of [RFC8484]).
 
@@ -497,15 +486,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    filtering:  If the DNS server changes some of the answers that it
       returns based on policy criteria, such as to prevent access to
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                 [Page 9]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
       malware sites or objectionable content.  This optional attribute
       has the following structure:
 
@@ -518,6 +498,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    notifyuser:  If the transaction data is logged to notify the user
       access to certain domains is blocked, the period for which the
+
+
+
+Reddy, et al.             Expires April 5, 2020                 [Page 9]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
+
       transaction data is stored.  A value of negative one (-1)
       indicates indefinite duration of logging transaction data to
       notify the user.  A value of zero (0) indicates no logging.
@@ -554,14 +542,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
       parties.  If the parameter value is set to 'true', means share or
       sell data to third parties.  This is a mandatory attribute.
 
-
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 10]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
    qnameminimization:  If the DNS server implements QNAME minimisation
       [RFC7816] to improve DNS privacy.  If the parameter value is set
       to 'true', QNAME minimisation is supported by the DNS server.
@@ -573,6 +553,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    auditurl:  A URL that points to the security assessment report of the
       DNS server by a third party auditor.  This is an optional
       attribute.
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 10]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
    upstreamservers:  The local DNS server can be configured as a
       Forwarding DNS server [RFC8499] relying on the upstream resolver
@@ -608,6 +596,18 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
          change in the local DNS server configuration to use an
          alternate resolver.
 
+6.2.3.  Example
+
+   The below Figure shows an example of privacy policy information.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -617,10 +617,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 11]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-6.2.3.  Example
-
-   The below Figure shows an example of privacy policy information.
 
    {
      "server":{
@@ -667,6 +663,10 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    Appendix A of this document has a detailed example of how to follow
    the steps to create the JWS Signature.
 
+   JWS [RFC7515] Section 5.1 Step 7 JWS JSON serialization is supported
+   for PAT to enable multiple signatures to be applied to the PAT
+   object.  For example, the PAT object can be cryptographically signed
+
 
 
 Reddy, et al.             Expires April 5, 2020                [Page 12]
@@ -674,9 +674,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 12]
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
 
-   JWS [RFC7515] Section 5.1 Step 7 JWS JSON serialization is supported
-   for PAT to enable multiple signatures to be applied to the PAT
-   object.  For example, the PAT object can be cryptographically signed
    by the domain hosting the DNS server and by a third party who
    performed privacy and security audit of the DNS server.
 
@@ -721,6 +718,9 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    4.  JSON numbers are to be encoded as integers unless the field is
        defined to be encoded otherwise.
 
+   5.  Encoding rules MUST be applied recursively to member values and
+       array values.
+
 
 
 
@@ -729,9 +729,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 13]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   5.  Encoding rules MUST be applied recursively to member values and
-       array values.
 
 9.1.  Example PAT deterministic JSON form
 
@@ -778,6 +775,9 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    Separately, the user is expected to indicate to their system their
    PAT privacy requirements (e.g., logging, etc.).  By doing so, the DNS
    client can automatically discover local DNS-over-TLS or DNS-over-
+   HTTPS server, validate the PAT signature and check if the PAT
+   complies with user's privacy needs, prior to using that DNS-over-TLS
+   or DNS-over-HTTPS server for DNS queries.  The client MAY also
 
 
 
@@ -786,9 +786,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 14]
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
 
-   HTTPS server, validate the PAT signature and check if the PAT
-   complies with user's privacy needs, prior to using that DNS-over-TLS
-   or DNS-over-HTTPS server for DNS queries.  The client MAY also
    retrieve the human-readable privacy statement from the 'privacyurl'
    attribute to assist with that decision (e.g., display the privacy
    statement when it changes, show differences in previously-retrieved
@@ -831,6 +828,9 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    the DNS server's domain re-asserts the privacy policy information and
    limits the damage from change in privacy policy and mis-issuance.
 
+12.  IANA Considerations
+
+
 
 
 
@@ -841,8 +841,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 15]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-12.  IANA Considerations
 
 12.1.  Media Type Registration
 
@@ -891,14 +889,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    o  Change Controller: IESG
 
+   o  Provisional registration?  No
+
 
 
 Reddy, et al.             Expires April 5, 2020                [Page 16]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   o  Provisional registration?  No
 
 12.2.  JSON Web Token Claims Registration
 
@@ -943,8 +941,10 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
               Information Self-publication", draft-ietf-dnsop-resolver-
               information-00 (work in progress), August 2019.
 
-
-
+   [I-D.ietf-dnsop-terminology-bis]
+              Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
+              Terminology", draft-ietf-dnsop-terminology-bis-14 (work in
+              progress), September 2018.
 
 
 
@@ -953,11 +953,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 17]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   [I-D.ietf-dnsop-terminology-bis]
-              Hoffman, P., Sullivan, A., and K. Fujiwara, "DNS
-              Terminology", draft-ietf-dnsop-terminology-bis-14 (work in
-              progress), September 2018.
 
    [RFC2046]  Freed, N. and N. Borenstein, "Multipurpose Internet Mail
               Extensions (MIME) Part Two: Media Types", RFC 2046,
@@ -1002,6 +997,11 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
               DOI 10.17487/RFC7518, May 2015,
               <https://www.rfc-editor.org/info/rfc7518>.
 
+   [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
+              (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
+              <https://www.rfc-editor.org/info/rfc7519>.
+
+
 
 
 
@@ -1009,10 +1009,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 18]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
-              (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
-              <https://www.rfc-editor.org/info/rfc7519>.
 
    [RFC7638]  Jones, M. and N. Sakimura, "JSON Web Key (JWK)
               Thumbprint", RFC 7638, DOI 10.17487/RFC7638, September
@@ -1057,6 +1053,10 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
               dprive-bootstrap-dns-server-05 (work in progress), October
               2019.
 
+   [RFC7626]  Bortzmeyer, S., "DNS Privacy Considerations", RFC 7626,
+              DOI 10.17487/RFC7626, August 2015,
+              <https://www.rfc-editor.org/info/rfc7626>.
+
 
 
 
@@ -1065,10 +1065,6 @@ Reddy, et al.             Expires April 5, 2020                [Page 19]
 
 Internet-Draft     Asserted DNS server privacy policy       October 2019
 
-
-   [RFC7626]  Bortzmeyer, S., "DNS Privacy Considerations", RFC 7626,
-              DOI 10.17487/RFC7626, August 2015,
-              <https://www.rfc-editor.org/info/rfc7626>.
 
    [RFC7816]  Bortzmeyer, S., "DNS Query Name Minimisation to Improve
               Privacy", RFC 7816, DOI 10.17487/RFC7816, March 2016,
@@ -1100,28 +1096,6 @@ Appendix A.  Example ES256 based PAT JWS Serialization and Signature
    Step 1 for JWS references the JWS Payload, an example PAT Payload is
    as follows:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 20]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
    {
      "server":{
          "adn":["example.com"]
@@ -1139,6 +1113,14 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
         "privacyurl": "https://example.com/commitment-to-privacy/"
      }
    }
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 20]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
    This would be serialized to the form (with line break used for
    display purposes only):
@@ -1171,13 +1153,6 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    This would be serialized to the form (with line break used for
    display purposes only):
 
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 21]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
    {"alg":"ES256","typ":"pat","x5u":"https://cert.example.com
    /pat.cer"}
 
@@ -1193,6 +1168,15 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
    of the PAT Signing Input ASCII(BASE64URL(UTF8(JWS Protected
    Header)) || '.' || BASE64URL(JWS Payload)) using ES256 as the
    algorithm and the BASE64URL(JWS Signature).
+
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 21]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
    LEyaZpkJWVeJiQXdh6stCUo5VnLO56p9nTNsG8xhqpQMoJWc4j46Ze_43wPG-vHb
    Xq7BaVIfdb_Lw3BcKr92Cw
@@ -1226,14 +1210,6 @@ A.1.  X.509 Private Key in PKCS#8 format for ES256 Example**
    1RTwjmYSi9R/zpBnuQ4EiMnCqfMPWiZqB4QdbAd0E7oH50VpuZ1P087G
    -----END PRIVATE KEY-----
 
-
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 22]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
 A.2.  X.509 Public Key for ES256 Example**
 
    -----BEGIN PUBLIC KEY-----
@@ -1245,6 +1221,18 @@ Appendix B.  Complete JWS JSON Serialization Representation with
              multiple Signatures
 
    The JWS payload used in this example as follows.
+
+
+
+
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 22]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
    {
      "server":{
@@ -1281,15 +1269,6 @@ Appendix B.  Complete JWS JSON Serialization Representation with
 
    The JWS Protected Header value used for the second signature is:
 
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 23]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
    {
      "alg":"ES384",
      "typ":"pat",
@@ -1298,6 +1277,18 @@ Internet-Draft     Asserted DNS server privacy policy       October 2019
 
    The complete JWS JSON Serialization for these values is as follows
    (with line breaks within values for display purposes only):
+
+
+
+
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 23]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
+
 
 {
   "payload":
@@ -1337,15 +1328,6 @@ B.2.  X.509 Public Key for ES384 Example**
    q9UU8I5mEovUf86QZ7kOBIjJwqnzD1omageEHWwHdBO6B+dFabmdT9POxg==
    -----END PUBLIC KEY-----
 
-
-
-
-
-Reddy, et al.             Expires April 5, 2020                [Page 24]
-
-Internet-Draft     Asserted DNS server privacy policy       October 2019
-
-
 Authors' Addresses
 
    Tirumaleswar Reddy
@@ -1355,6 +1337,13 @@ Authors' Addresses
    India
 
    Email: kondtir@gmail.com
+
+
+
+
+Reddy, et al.             Expires April 5, 2020                [Page 24]
+
+Internet-Draft     Asserted DNS server privacy policy       October 2019
 
 
    Dan Wing
@@ -1369,6 +1358,17 @@ Authors' Addresses
    USA
 
    Email: mcr+ietf@sandelman.ca
+
+
+
+
+
+
+
+
+
+
+
 
 
 
